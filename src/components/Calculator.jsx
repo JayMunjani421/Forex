@@ -13,14 +13,15 @@ const Calculator = () => {
   const [hasInitializedLivePrice, setHasInitializedLivePrice] = useState(false);
 
   useEffect(() => {
+    setHasInitializedLivePrice(false);
+    setLivePrice(null);
     let intervalId;
     const fetchLivePrice = async () => {
-      if (symbol !== 'EURUSD') return;
       try {
-        const res = await fetch('https://api.binance.com/api/v3/ticker/price?symbol=EURUSDT');
+        const res = await fetch(`https://www.fxtm.com/informers/rates/symbols?symbols=${symbol}`);
         const data = await res.json();
-        if (data && data.price) {
-          setLivePrice(parseFloat(data.price));
+        if (data && data[symbol] && data[symbol].bid) {
+          setLivePrice(parseFloat(data[symbol].bid));
         }
       } catch (err) {
         console.error('Error fetching live price:', err);
@@ -92,7 +93,7 @@ const Calculator = () => {
             <div className="relative border border-gray-200 rounded-xl px-4 py-3 focus-within:border-blue-500 transition-colors">
               <label className="absolute -top-3 left-3 flex items-center gap-2 bg-white px-1 text-xs text-gray-500">
                 Symbol
-                {symbol === 'EURUSD' && livePrice && (
+                {livePrice && (
                   <span className="text-green-500 font-medium flex items-center gap-1 ml-1" title="Live Market Price">
                     <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></span>
                     {livePrice.toFixed(5)}
@@ -117,7 +118,7 @@ const Calculator = () => {
             <div className="relative border border-gray-200 rounded-xl px-4 py-3 flex items-center justify-between focus-within:border-blue-500 transition-colors">
               <label className="absolute -top-3 left-3 bg-white px-1 text-xs text-gray-500 flex items-center gap-2">
                 Open price
-                {symbol === 'EURUSD' && livePrice && (
+                {livePrice && (
                   <button 
                     onClick={() => setOpenPrice(livePrice)}
                     className="text-[10px] text-blue-500 hover:text-blue-600 transition-colors flex items-center gap-1 bg-blue-50 px-1.5 py-0.5 rounded cursor-pointer"
@@ -161,7 +162,7 @@ const Calculator = () => {
             <div className="relative border border-gray-200 rounded-xl px-4 py-3 flex items-center justify-between focus-within:border-blue-500 transition-colors">
               <label className="absolute -top-3 left-3 bg-white px-1 text-xs text-gray-500 flex items-center gap-2">
                 Close price
-                {symbol === 'EURUSD' && livePrice && (
+                {livePrice && (
                   <button 
                     onClick={() => setClosePrice(livePrice)}
                     className="text-[10px] text-blue-500 hover:text-blue-600 transition-colors flex items-center gap-1 bg-blue-50 px-1.5 py-0.5 rounded cursor-pointer"
