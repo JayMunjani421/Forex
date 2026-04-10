@@ -85,19 +85,23 @@ const Calculator = () => {
   };
 
   return (
-    <div className="w-full max-w-5xl mx-auto bg-white rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] p-6 md:p-10 border border-gray-100">
-      <div className="flex flex-col lg:flex-row gap-12 lg:gap-20">
+    <div className="w-full max-w-5xl mx-auto bg-[#0d1323]/80 backdrop-blur-2xl rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.5)] p-6 md:p-12 border border-white/5 relative overflow-hidden">
+      {/* Decorative gradient blobs */}
+      <div className="absolute -top-40 -right-40 w-96 h-96 bg-indigo-500/20 rounded-full blur-[100px] pointer-events-none"></div>
+      <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-purple-500/10 rounded-full blur-[100px] pointer-events-none"></div>
+
+      <div className="flex flex-col lg:flex-row gap-12 lg:gap-20 relative z-10">
         {/* Left Side: Form */}
-        <div className="flex-1 space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="flex-1 space-y-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             
             {/* Symbol */}
-            <div className="relative border border-gray-200 rounded-xl px-4 py-3 focus-within:border-blue-500 transition-colors">
-              <label className="absolute -top-3 left-3 flex items-center gap-2 bg-white px-1 text-xs text-gray-500">
+            <div className="relative border border-slate-700/60 bg-[#12192b]/80 rounded-2xl px-4 py-3.5 focus-within:border-indigo-500 focus-within:ring-1 focus-within:ring-indigo-500 transition-all shadow-inner">
+              <label className="absolute -top-3 left-4 flex items-center gap-2 bg-[#0c1221] px-2 text-[11px] font-bold uppercase tracking-wider text-indigo-300 rounded-md">
                 Symbol
                 {livePrice && (
-                  <span className="text-green-500 font-medium flex items-center gap-1 ml-1" title="Live Market Price">
-                    <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></span>
+                  <span className="text-emerald-400 font-medium flex items-center gap-1.5 ml-2 normal-case tracking-normal" title="Live Market Price">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse border border-emerald-300"></span>
                     {livePrice.toFixed(5)}
                   </span>
                 )}
@@ -105,20 +109,20 @@ const Calculator = () => {
               <select 
                 value={symbol}
                 onChange={(e) => setSymbol(e.target.value)}
-                className="w-full bg-transparent outline-none text-gray-900 font-medium cursor-pointer appearance-none"
+                className="w-full bg-transparent outline-none text-slate-100 font-medium cursor-pointer appearance-none mt-1"
               >
-                <option value="EURUSD">EURUSD</option>
-                <option value="GBPUSD">GBPUSD</option>
-                <option value="USDJPY">USDJPY</option>
+                <option value="EURUSD" className="bg-slate-900">EURUSD</option>
+                <option value="GBPUSD" className="bg-slate-900">GBPUSD</option>
+                <option value="USDJPY" className="bg-slate-900">USDJPY</option>
               </select>
-              <div className="pointer-events-none absolute inset-y-0 right-4 flex items-center text-gray-400">
+              <div className="pointer-events-none absolute inset-y-0 right-4 flex items-center text-slate-500 mt-1">
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
               </div>
             </div>
 
             {/* Open Price */}
-            <div className="relative border border-gray-200 rounded-xl px-4 py-3 flex items-center justify-between focus-within:border-blue-500 transition-colors">
-              <label className="absolute -top-3 left-3 bg-white px-1 text-xs text-gray-500 flex items-center gap-2">
+            <div className="relative border border-slate-700/60 bg-[#12192b]/80 rounded-2xl px-4 py-3.5 flex items-center justify-between focus-within:border-indigo-500 focus-within:ring-1 focus-within:ring-indigo-500 transition-all shadow-inner">
+              <label className="absolute -top-3 left-4 bg-[#0c1221] px-2 text-[11px] font-bold uppercase tracking-wider text-indigo-300 rounded-md flex items-center gap-2">
                 Open price
                 {livePrice && (
                   <button 
@@ -126,14 +130,14 @@ const Calculator = () => {
                       setOpenPrice(livePrice.toFixed(5));
                       setClosePrice((livePrice - 0.0001).toFixed(5));
                     }}
-                    className="text-[10px] text-blue-500 hover:text-blue-600 transition-colors flex items-center gap-1 bg-blue-50 px-1.5 py-0.5 rounded cursor-pointer"
+                    className="text-[10px] text-indigo-400 hover:text-indigo-300 transition-colors flex items-center gap-1 bg-indigo-500/10 hover:bg-indigo-500/20 px-1.5 py-0.5 rounded cursor-pointer ml-1 normal-case tracking-normal"
                     title="Update to live price"
                   >
                     <RefreshCw className="w-2.5 h-2.5" />
                   </button>
                 )}
               </label>
-              <button onClick={() => decrement(setOpenPrice, openPrice, 0.00001, 0, 5)} className="text-gray-400 hover:text-gray-700 transition-colors">
+              <button onClick={() => decrement(setOpenPrice, openPrice, 0.00001, 0, 5)} className="text-slate-400 hover:text-indigo-400 transition-colors p-1 mt-1">
                 <Minus className="w-4 h-4" />
               </button>
               <input 
@@ -146,32 +150,32 @@ const Calculator = () => {
                     setOpenPrice(parseFloat(e.target.value).toFixed(5));
                   }
                 }}
-                className="w-full text-center bg-transparent outline-none text-gray-900 font-medium"
+                className="w-full text-center bg-transparent outline-none text-slate-100 font-medium mt-1"
               />
-              <button onClick={() => increment(setOpenPrice, openPrice, 0.00001, 5)} className="text-gray-400 hover:text-gray-700 transition-colors">
+              <button onClick={() => increment(setOpenPrice, openPrice, 0.00001, 5)} className="text-slate-400 hover:text-indigo-400 transition-colors p-1 mt-1">
                 <Plus className="w-4 h-4" />
               </button>
             </div>
 
             {/* Account currency */}
-            <div className="relative border border-gray-200 rounded-xl px-4 py-3 focus-within:border-blue-500 transition-colors">
-              <label className="absolute -top-3 left-3 bg-white px-1 text-xs text-gray-500">Account currency</label>
+            <div className="relative border border-slate-700/60 bg-[#12192b]/80 rounded-2xl px-4 py-3.5 focus-within:border-indigo-500 focus-within:ring-1 focus-within:ring-indigo-500 transition-all shadow-inner">
+              <label className="absolute -top-3 left-4 bg-[#0c1221] px-2 text-[11px] font-bold uppercase tracking-wider text-indigo-300 rounded-md">Account currency</label>
               <select 
                 value={currency}
                 onChange={(e) => setCurrency(e.target.value)}
-                className="w-full bg-transparent outline-none text-gray-900 font-medium cursor-pointer appearance-none"
+                className="w-full bg-transparent outline-none text-slate-100 font-medium cursor-pointer appearance-none mt-1"
               >
-                <option value="USD">USD</option>
-                <option value="EUR">EUR</option>
+                <option value="USD" className="bg-slate-900">USD</option>
+                <option value="EUR" className="bg-slate-900">EUR</option>
               </select>
-              <div className="pointer-events-none absolute inset-y-0 right-4 flex items-center text-gray-400">
+              <div className="pointer-events-none absolute inset-y-0 right-4 flex items-center text-slate-500 mt-1">
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
               </div>
             </div>
 
             {/* Close Price */}
-            <div className="relative border border-gray-200 rounded-xl px-4 py-3 flex items-center justify-between focus-within:border-blue-500 transition-colors">
-              <label className="absolute -top-3 left-3 bg-white px-1 text-xs text-gray-500 flex items-center gap-2">
+            <div className="relative border border-slate-700/60 bg-[#12192b]/80 rounded-2xl px-4 py-3.5 flex items-center justify-between focus-within:border-indigo-500 focus-within:ring-1 focus-within:ring-indigo-500 transition-all shadow-inner">
+              <label className="absolute -top-3 left-4 bg-[#0c1221] px-2 text-[11px] font-bold uppercase tracking-wider text-indigo-300 rounded-md flex items-center gap-2">
                 Close price
                 {livePrice && (
                   <button 
@@ -179,14 +183,14 @@ const Calculator = () => {
                       setOpenPrice(livePrice.toFixed(5));
                       setClosePrice((livePrice - 0.0001).toFixed(5));
                     }}
-                    className="text-[10px] text-blue-500 hover:text-blue-600 transition-colors flex items-center gap-1 bg-blue-50 px-1.5 py-0.5 rounded cursor-pointer"
+                    className="text-[10px] text-indigo-400 hover:text-indigo-300 transition-colors flex items-center gap-1 bg-indigo-500/10 hover:bg-indigo-500/20 px-1.5 py-0.5 rounded cursor-pointer ml-1 normal-case tracking-normal"
                     title="Update to live price"
                   >
                     <RefreshCw className="w-2.5 h-2.5" />
                   </button>
                 )}
               </label>
-              <button onClick={() => decrement(setClosePrice, closePrice, 0.00001, 0, 5)} className="text-gray-400 hover:text-gray-700 transition-colors">
+              <button onClick={() => decrement(setClosePrice, closePrice, 0.00001, 0, 5)} className="text-slate-400 hover:text-indigo-400 transition-colors p-1 mt-1">
                 <Minus className="w-4 h-4" />
               </button>
               <input 
@@ -199,34 +203,34 @@ const Calculator = () => {
                     setClosePrice(parseFloat(e.target.value).toFixed(5));
                   }
                 }}
-                className="w-full text-center bg-transparent outline-none text-gray-900 font-medium"
+                className="w-full text-center bg-transparent outline-none text-slate-100 font-medium mt-1"
               />
-              <button onClick={() => increment(setClosePrice, closePrice, 0.00001, 5)} className="text-gray-400 hover:text-gray-700 transition-colors">
+              <button onClick={() => increment(setClosePrice, closePrice, 0.00001, 5)} className="text-slate-400 hover:text-indigo-400 transition-colors p-1 mt-1">
                 <Plus className="w-4 h-4" />
               </button>
             </div>
 
             {/* Period in days */}
-            <div className="relative border border-gray-200 rounded-xl px-4 py-3 flex items-center justify-between focus-within:border-blue-500 transition-colors">
-              <label className="absolute -top-3 left-3 bg-white px-1 text-xs text-gray-500">Period in days</label>
-              <button onClick={() => decrement(setDays, days, 1, 1)} className="text-gray-400 hover:text-gray-700 transition-colors">
+            <div className="relative border border-slate-700/60 bg-[#12192b]/80 rounded-2xl px-4 py-3.5 flex items-center justify-between focus-within:border-indigo-500 focus-within:ring-1 focus-within:ring-indigo-500 transition-all shadow-inner">
+              <label className="absolute -top-3 left-4 bg-[#0c1221] px-2 text-[11px] font-bold uppercase tracking-wider text-indigo-300 rounded-md">Period in days</label>
+              <button onClick={() => decrement(setDays, days, 1, 1)} className="text-slate-400 hover:text-indigo-400 transition-colors p-1 mt-1">
                 <Minus className="w-4 h-4" />
               </button>
               <input 
                 type="number" 
                 value={days}
                 onChange={(e) => setDays(parseFloat(e.target.value) || 1)}
-                className="w-full text-center bg-transparent outline-none text-gray-900 font-medium"
+                className="w-full text-center bg-transparent outline-none text-slate-100 font-medium mt-1"
               />
-              <button onClick={() => increment(setDays, days, 1)} className="text-gray-400 hover:text-gray-700 transition-colors">
+              <button onClick={() => increment(setDays, days, 1)} className="text-slate-400 hover:text-indigo-400 transition-colors p-1 mt-1">
                 <Plus className="w-4 h-4" />
               </button>
             </div>
 
             {/* Volume */}
-            <div className="relative border border-gray-200 rounded-xl px-4 py-3 flex items-center justify-between focus-within:border-blue-500 transition-colors">
-              <label className="absolute -top-3 left-3 bg-white px-1 text-xs text-gray-500">Volume, lots</label>
-              <button onClick={() => decrement(setVolume, volume, 0.01, 0.01)} className="text-gray-400 hover:text-gray-700 transition-colors">
+            <div className="relative border border-slate-700/60 bg-[#12192b]/80 rounded-2xl px-4 py-3.5 flex items-center justify-between focus-within:border-indigo-500 focus-within:ring-1 focus-within:ring-indigo-500 transition-all shadow-inner">
+              <label className="absolute -top-3 left-4 bg-[#0c1221] px-2 text-[11px] font-bold uppercase tracking-wider text-indigo-300 rounded-md">Volume, lots</label>
+              <button onClick={() => decrement(setVolume, volume, 0.01, 0.01)} className="text-slate-400 hover:text-indigo-400 transition-colors p-1 mt-1">
                 <Minus className="w-4 h-4" />
               </button>
               <input 
@@ -234,27 +238,27 @@ const Calculator = () => {
                 value={volume}
                 step="0.01"
                 onChange={(e) => setVolume(parseFloat(e.target.value) || 0)}
-                className="w-full text-center bg-transparent outline-none text-gray-900 font-medium"
+                className="w-full text-center bg-transparent outline-none text-slate-100 font-medium mt-1"
               />
-              <button onClick={() => increment(setVolume, volume, 0.01)} className="text-gray-400 hover:text-gray-700 transition-colors">
+              <button onClick={() => increment(setVolume, volume, 0.01)} className="text-slate-400 hover:text-indigo-400 transition-colors p-1 mt-1">
                 <Plus className="w-4 h-4" />
               </button>
             </div>
 
             {/* Direction */}
-            <div className="col-span-1 md:col-span-2 flex w-full">
+            <div className="col-span-1 md:col-span-2 flex w-full shadow-sm rounded-xl overflow-hidden mt-2">
               <button 
                 onClick={() => setDirection('Sell')}
-                className={`w-1/2 py-3 rounded-l-xl border text-sm font-medium transition-colors outline-none
-                  ${direction === 'Sell' ? 'border-red-400 text-red-500 bg-red-50' : 'border-gray-200 text-gray-400 hover:bg-gray-50'}
+                className={`w-1/2 py-3.5 border text-sm font-semibold transition-all outline-none
+                  ${direction === 'Sell' ? 'border-rose-500/50 text-rose-400 bg-rose-500/10' : 'border-slate-700/60 text-slate-400 hover:bg-slate-800 hover:text-slate-300'}
                 `}
               >
                 Sell
               </button>
               <button 
                 onClick={() => setDirection('Buy')}
-                className={`w-1/2 py-3 rounded-r-xl border-y border-r border-l-0 text-sm font-medium transition-colors outline-none
-                  ${direction === 'Buy' ? 'border-green-400 text-green-600 bg-green-50' : 'border-gray-200 text-gray-400 hover:bg-gray-50'}
+                className={`w-1/2 py-3.5 border-y border-r border-l-0 text-sm font-semibold transition-all outline-none
+                  ${direction === 'Buy' ? 'border-emerald-500/50 text-emerald-400 bg-emerald-500/10' : 'border-slate-700/60 text-slate-400 hover:bg-slate-800 hover:text-slate-300'}
                 `}
               >
                 Buy
@@ -265,41 +269,50 @@ const Calculator = () => {
         </div>
 
         {/* Right Side: Results */}
-        <div className="lg:w-1/3 flex flex-col justify-center">
-          <h3 className="text-sm font-semibold text-gray-900 mb-6">Calculation results</h3>
-          
-          <div className="space-y-6">
-            <div className="flex justify-between items-center bg-gray-50/50 p-4 rounded-xl">
-              <span className="text-gray-900 font-semibold text-lg">Profit</span>
-              <span className={`text-2xl font-bold ${!hasCalculated ? 'text-gray-400' : result.profit < 0 ? 'text-red-500' : 'text-green-600'}`}>
-                {!hasCalculated ? '-' : `${result.profit < 0 ? '-' : ''}$${Math.abs(result.profit).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
-              </span>
-            </div>
+        <div className="lg:w-[35%] flex flex-col justify-center">
+          <div className="bg-[#12192b]/80 border border-slate-700/60 rounded-3xl p-8 shadow-2xl relative overflow-hidden h-full flex flex-col justify-center">
+            {/* Inner subtle glow */}
+            <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/5 to-purple-500/5 pointer-events-none"></div>
 
-            <div className="space-y-4 px-2">
-              <div className="flex justify-between items-center border-b border-gray-100 pb-4">
-                <span className="text-gray-500 text-sm">Gross profit</span>
-                <span className={`font-medium ${!hasCalculated ? 'text-gray-400' : result.grossProfit < 0 ? 'text-red-500' : 'text-green-600'}`}>
-                  {!hasCalculated ? '-' : `${result.grossProfit < 0 ? '-' : ''}$${Math.abs(result.grossProfit).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
+            <h3 className="text-[11px] font-bold uppercase tracking-wider text-indigo-400 mb-8 flex items-center gap-3">
+              <span className="w-8 h-px bg-indigo-500/50"></span>
+              Calculation Results
+            </h3>
+            
+            <div className="space-y-8 relative z-10 w-full">
+              <div className="flex justify-between items-end pb-6 border-b border-white/5">
+                <span className="text-slate-400 font-medium">Profit</span>
+                <span className={`text-4xl font-extrabold tracking-tight ${!hasCalculated ? 'text-slate-600' : result.profit < 0 ? 'text-rose-400' : 'text-emerald-400'}`}>
+                  {!hasCalculated ? '-' : `${result.profit < 0 ? '-' : ''}$${Math.abs(result.profit).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
                 </span>
               </div>
-              <div className="flex justify-between items-center border-b border-gray-100 pb-4">
-                <span className="text-gray-500 text-sm">Trading fees</span>
-                <span className={`font-medium ${!hasCalculated ? 'text-gray-400' : 'text-gray-500'}`}>
-                  {!hasCalculated ? '-' : `-$${result.fees.toFixed(2)}`}
-                </span>
+
+              <div className="space-y-5">
+                <div className="flex justify-between items-center group">
+                  <span className="text-slate-500 text-sm group-hover:text-slate-400 transition-colors">Gross profit</span>
+                  <span className={`font-semibold ${!hasCalculated ? 'text-slate-600' : result.grossProfit < 0 ? 'text-rose-400' : 'text-slate-200'}`}>
+                    {!hasCalculated ? '-' : `${result.grossProfit < 0 ? '-' : ''}$${Math.abs(result.grossProfit).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
+                  </span>
+                </div>
+                <div className="flex justify-between items-center group">
+                  <span className="text-slate-500 text-sm group-hover:text-slate-400 transition-colors">Trading fees</span>
+                  <span className={`font-semibold ${!hasCalculated ? 'text-slate-600' : 'text-slate-400'}`}>
+                    {!hasCalculated ? '-' : `-$${result.fees.toFixed(2)}`}
+                  </span>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
 
-      <div className="mt-10 border-t border-gray-100 pt-8 flex justify-end">
+      <div className="mt-12 flex justify-end relative z-10">
         <button 
           onClick={handleCalculate}
-          className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-xl font-medium transition-colors shadow-sm focus:ring-4 focus:ring-blue-100"
+          className="w-full md:w-auto bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-400 hover:to-purple-500 text-white px-10 py-4 rounded-xl font-bold transition-all shadow-lg hover:shadow-indigo-500/25 active:scale-[0.98] focus:ring-4 focus:ring-indigo-500/20 text-lg flex items-center justify-center gap-2 group"
         >
           Calculate
+          <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
         </button>
       </div>
 
