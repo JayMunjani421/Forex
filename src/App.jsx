@@ -13,17 +13,6 @@ function App() {
           <p className="text-gray-600 text-lg">
             The Octa Forex profit calculator is a risk management tool to improve your trading of currency pairs and other assets. Calculate potential profits and losses of your orders and trade financial markets more confidently.
           </p>
-          <p className="text-gray-600 text-sm py-2">
-            Ready to put your calculations to the test? Practice risk-free with simulated funds or start trading with real money.
-          </p>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-6">
-            <button className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white font-medium px-6 py-2.5 rounded-lg transition-colors">
-              Trade in a real account
-            </button>
-            <button className="w-full sm:w-auto bg-white border border-gray-300 hover:bg-gray-50 text-gray-800 font-medium px-6 py-2.5 rounded-lg transition-colors">
-              Try on a demo account
-            </button>
-          </div>
         </div>
 
         {/* Calculator Widget */}
