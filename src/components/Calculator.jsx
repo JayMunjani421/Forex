@@ -78,10 +78,6 @@ const Calculator = () => {
 
   return (
     <div className="w-full max-w-5xl mx-auto bg-white rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] p-6 md:p-10 border border-gray-100">
-      <div className="mb-8 border-b border-gray-100 pb-4">
-        
-      </div>
-
       <div className="flex flex-col lg:flex-row gap-12 lg:gap-20">
         {/* Left Side: Form */}
         <div className="flex-1 space-y-6">
