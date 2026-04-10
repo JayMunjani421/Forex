@@ -272,11 +272,10 @@ const Calculator = () => {
         <div className="lg:w-[35%] flex flex-col justify-center">
           <div className="bg-[#12192b]/80 border border-slate-700/60 rounded-3xl p-8 shadow-2xl relative overflow-hidden h-full flex flex-col justify-center">
             {/* Inner subtle glow */}
-            {/* <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/5 to-purple-500/5 pointer-events-none"></div> */}
+            <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/5 to-purple-500/5 pointer-events-none"></div>
 
-            <h3 className="text-base font-bold uppercase tracking-wider text-indigo-400 mb-8 flex items-center gap-3">
-              <span className="w-8 h-px bg-indigo-500/50"></span>
-              Calculation Results
+            <h3 className="text-sm font-bold uppercase tracking-wider text-indigo-400 mb-8 flex items-center gap-3">
+              Final Results
             </h3>
             
             <div className="space-y-8 relative z-10 w-full">
