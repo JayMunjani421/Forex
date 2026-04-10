@@ -44,8 +44,8 @@ const Calculator = () => {
   }, [livePrice, hasInitializedLivePrice]);
 
   const [result, setResult] = useState({
-    profit: 10000.0,
-    grossProfit: 10000.0,
+    profit: 0.0,
+    grossProfit: 0.0,
     fees: 0.0,
   });
 
