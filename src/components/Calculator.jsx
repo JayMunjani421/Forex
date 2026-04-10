@@ -6,8 +6,8 @@ const Calculator = () => {
   const [currency, setCurrency] = useState('USD');
   const [days, setDays] = useState(1);
   const [volume, setVolume] = useState(1.0);
-  const [openPrice, setOpenPrice] = useState(1.1);
-  const [closePrice, setClosePrice] = useState(1.2);
+  const [openPrice, setOpenPrice] = useState();
+  const [closePrice, setClosePrice] = useState();
   const [direction, setDirection] = useState('Buy');
   const [livePrice, setLivePrice] = useState(null);
   const [hasInitializedLivePrice, setHasInitializedLivePrice] = useState(false);
