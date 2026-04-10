@@ -11,6 +11,7 @@ const Calculator = () => {
   const [direction, setDirection] = useState('Buy');
   const [livePrice, setLivePrice] = useState(null);
   const [hasInitializedLivePrice, setHasInitializedLivePrice] = useState(false);
+  const [hasCalculated, setHasCalculated] = useState(false);
 
   useEffect(() => {
     setHasInitializedLivePrice(false);
@@ -65,6 +66,7 @@ const Calculator = () => {
       grossProfit: parseFloat(profit.toFixed(2)),
       fees: 0.0,
     });
+    setHasCalculated(true);
   };
 
   const increment = (setter, value, step) => {
@@ -114,7 +116,10 @@ const Calculator = () => {
                 Open price
                 {livePrice && (
                   <button 
-                    onClick={() => setOpenPrice(livePrice)}
+                    onClick={() => {
+                      setOpenPrice(livePrice);
+                      setClosePrice(parseFloat((livePrice - 0.0001).toFixed(5)));
+                    }}
                     className="text-[10px] text-blue-500 hover:text-blue-600 transition-colors flex items-center gap-1 bg-blue-50 px-1.5 py-0.5 rounded cursor-pointer"
                     title="Update to live price"
                   >
@@ -158,7 +163,10 @@ const Calculator = () => {
                 Close price
                 {livePrice && (
                   <button 
-                    onClick={() => setClosePrice(parseFloat((livePrice - 0.0001).toFixed(5)))}
+                    onClick={() => {
+                      setOpenPrice(livePrice);
+                      setClosePrice(parseFloat((livePrice - 0.0001).toFixed(5)));
+                    }}
                     className="text-[10px] text-blue-500 hover:text-blue-600 transition-colors flex items-center gap-1 bg-blue-50 px-1.5 py-0.5 rounded cursor-pointer"
                     title="Update to live price"
                   >
@@ -245,21 +253,23 @@ const Calculator = () => {
           <div className="space-y-6">
             <div className="flex justify-between items-center bg-gray-50/50 p-4 rounded-xl">
               <span className="text-gray-900 font-semibold text-lg">Profit</span>
-              <span className={`text-2xl font-bold ${result.profit < 0 ? 'text-red-500' : 'text-green-600'}`}>
-                {result.profit < 0 ? '-' : ''}${Math.abs(result.profit).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+              <span className={`text-2xl font-bold ${!hasCalculated ? 'text-gray-400' : result.profit < 0 ? 'text-red-500' : 'text-green-600'}`}>
+                {!hasCalculated ? '-' : `${result.profit < 0 ? '-' : ''}$${Math.abs(result.profit).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
               </span>
             </div>
 
             <div className="space-y-4 px-2">
               <div className="flex justify-between items-center border-b border-gray-100 pb-4">
                 <span className="text-gray-500 text-sm">Gross profit</span>
-                <span className={`font-medium ${result.grossProfit < 0 ? 'text-red-500' : 'text-green-600'}`}>
-                  {result.grossProfit < 0 ? '-' : ''}${Math.abs(result.grossProfit).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                <span className={`font-medium ${!hasCalculated ? 'text-gray-400' : result.grossProfit < 0 ? 'text-red-500' : 'text-green-600'}`}>
+                  {!hasCalculated ? '-' : `${result.grossProfit < 0 ? '-' : ''}$${Math.abs(result.grossProfit).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
                 </span>
               </div>
               <div className="flex justify-between items-center border-b border-gray-100 pb-4">
                 <span className="text-gray-500 text-sm">Trading fees</span>
-                <span className="text-gray-500 font-medium">-${result.fees.toFixed(2)}</span>
+                <span className={`font-medium ${!hasCalculated ? 'text-gray-400' : 'text-gray-500'}`}>
+                  {!hasCalculated ? '-' : `-$${result.fees.toFixed(2)}`}
+                </span>
               </div>
             </div>
           </div>
