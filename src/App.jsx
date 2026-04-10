@@ -11,7 +11,7 @@ function App() {
             Real-Time Forex Profit Calculator
           </h1>
           <p className="text-gray-600 text-lg">
-            The Octa Forex profit calculator is a risk management tool to improve your trading of currency pairs and other assets. Calculate potential profits and losses of your orders and trade financial markets more confidently.
+            The Forex profit calculator is a risk management tool to improve your trading of currency pairs and other assets. Calculate potential profits and losses of your orders and trade financial markets more confidently.
           </p>
         </div>
 

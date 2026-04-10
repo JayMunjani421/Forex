@@ -38,7 +38,7 @@ const Calculator = () => {
   useEffect(() => {
     if (livePrice && !hasInitializedLivePrice) {
       setOpenPrice(livePrice);
-      setClosePrice(livePrice);
+      setClosePrice(parseFloat((livePrice - 0.0001).toFixed(5)));
       setHasInitializedLivePrice(true);
     }
   }, [livePrice, hasInitializedLivePrice]);
@@ -158,7 +158,7 @@ const Calculator = () => {
                 Close price
                 {livePrice && (
                   <button 
-                    onClick={() => setClosePrice(livePrice)}
+                    onClick={() => setClosePrice(parseFloat((livePrice - 0.0001).toFixed(5)))}
                     className="text-[10px] text-blue-500 hover:text-blue-600 transition-colors flex items-center gap-1 bg-blue-50 px-1.5 py-0.5 rounded cursor-pointer"
                     title="Update to live price"
                   >
