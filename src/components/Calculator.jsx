@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { Minus, Plus } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Minus, Plus, RefreshCw } from 'lucide-react';
 
 const Calculator = () => {
   const [symbol, setSymbol] = useState('EURUSD');
@@ -9,6 +9,38 @@ const Calculator = () => {
   const [openPrice, setOpenPrice] = useState(1.1);
   const [closePrice, setClosePrice] = useState(1.2);
   const [direction, setDirection] = useState('Buy');
+  const [livePrice, setLivePrice] = useState(null);
+  const [hasInitializedLivePrice, setHasInitializedLivePrice] = useState(false);
+
+  useEffect(() => {
+    let intervalId;
+    const fetchLivePrice = async () => {
+      if (symbol !== 'EURUSD') return;
+      try {
+        const res = await fetch('https://api.binance.com/api/v3/ticker/price?symbol=EURUSDT');
+        const data = await res.json();
+        if (data && data.price) {
+          setLivePrice(parseFloat(data.price));
+        }
+      } catch (err) {
+        console.error('Error fetching live price:', err);
+      }
+    };
+
+    fetchLivePrice();
+    // Poll every 3 seconds for real-time updates
+    intervalId = setInterval(fetchLivePrice, 3000); 
+
+    return () => clearInterval(intervalId);
+  }, [symbol]);
+
+  useEffect(() => {
+    if (livePrice && !hasInitializedLivePrice) {
+      setOpenPrice(livePrice);
+      setClosePrice(livePrice);
+      setHasInitializedLivePrice(true);
+    }
+  }, [livePrice, hasInitializedLivePrice]);
 
   const [result, setResult] = useState({
     profit: 10000.0,
@@ -58,7 +90,15 @@ const Calculator = () => {
             
             {/* Symbol */}
             <div className="relative border border-gray-200 rounded-xl px-4 py-3 focus-within:border-blue-500 transition-colors">
-              <label className="absolute -top-3 left-3 bg-white px-1 text-xs text-gray-500">Symbol</label>
+              <label className="absolute -top-3 left-3 flex items-center gap-2 bg-white px-1 text-xs text-gray-500">
+                Symbol
+                {symbol === 'EURUSD' && livePrice && (
+                  <span className="text-green-500 font-medium flex items-center gap-1 ml-1" title="Live Market Price">
+                    <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></span>
+                    {livePrice.toFixed(5)}
+                  </span>
+                )}
+              </label>
               <select 
                 value={symbol}
                 onChange={(e) => setSymbol(e.target.value)}
@@ -75,7 +115,18 @@ const Calculator = () => {
 
             {/* Open Price */}
             <div className="relative border border-gray-200 rounded-xl px-4 py-3 flex items-center justify-between focus-within:border-blue-500 transition-colors">
-              <label className="absolute -top-3 left-3 bg-white px-1 text-xs text-gray-500">Open price</label>
+              <label className="absolute -top-3 left-3 bg-white px-1 text-xs text-gray-500 flex items-center gap-2">
+                Open price
+                {symbol === 'EURUSD' && livePrice && (
+                  <button 
+                    onClick={() => setOpenPrice(livePrice)}
+                    className="text-[10px] text-blue-500 hover:text-blue-600 transition-colors flex items-center gap-1 bg-blue-50 px-1.5 py-0.5 rounded cursor-pointer"
+                    title="Update to live price"
+                  >
+                    <RefreshCw className="w-2.5 h-2.5" />
+                  </button>
+                )}
+              </label>
               <button onClick={() => decrement(setOpenPrice, openPrice, 0.0001)} className="text-gray-400 hover:text-gray-700 transition-colors">
                 <Minus className="w-4 h-4" />
               </button>
@@ -108,7 +159,18 @@ const Calculator = () => {
 
             {/* Close Price */}
             <div className="relative border border-gray-200 rounded-xl px-4 py-3 flex items-center justify-between focus-within:border-blue-500 transition-colors">
-              <label className="absolute -top-3 left-3 bg-white px-1 text-xs text-gray-500">Close price</label>
+              <label className="absolute -top-3 left-3 bg-white px-1 text-xs text-gray-500 flex items-center gap-2">
+                Close price
+                {symbol === 'EURUSD' && livePrice && (
+                  <button 
+                    onClick={() => setClosePrice(livePrice)}
+                    className="text-[10px] text-blue-500 hover:text-blue-600 transition-colors flex items-center gap-1 bg-blue-50 px-1.5 py-0.5 rounded cursor-pointer"
+                    title="Update to live price"
+                  >
+                    <RefreshCw className="w-2.5 h-2.5" />
+                  </button>
+                )}
+              </label>
               <button onClick={() => decrement(setClosePrice, closePrice, 0.0001)} className="text-gray-400 hover:text-gray-700 transition-colors">
                 <Minus className="w-4 h-4" />
               </button>
