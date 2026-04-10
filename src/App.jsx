@@ -2,7 +2,7 @@ import Calculator from './components/Calculator';
 
 function App() {
   return (
-    <main className="min-h-screen bg-[#070b14] bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-indigo-900/20 via-[#070b14] to-[#070b14] flex items-center justify-center p-4 py-8 lg:py-12">
+    <main className="min-h-screen bg-[#070b14] bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-indigo-900/20 via-[#070b14] to-[#070b14] flex items-center justify-center p-4 py-8 lg:py-18">
       <div className="w-full max-w-6xl mx-auto space-y-10">
         
         {/* Header Text */}
