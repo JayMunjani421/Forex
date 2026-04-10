@@ -1,0 +1,22 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", "sans-serif";
+}
+
+@layer base {
+  body {
+    @apply bg-[#F6F8FA] text-gray-900 antialiased min-h-screen;
+    font-family: var(--font-sans);
+  }
+}
+
+/* Base resets & utilities for inputs without arrows */
+input[type=number]::-webkit-inner-spin-button, 
+input[type=number]::-webkit-outer-spin-button { 
+  -webkit-appearance: none; 
+  margin: 0; 
+}
+input[type=number] {
+  -moz-appearance: textfield;
+}
