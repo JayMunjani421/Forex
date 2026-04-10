@@ -246,19 +246,19 @@ const Calculator = () => {
             </div>
 
             {/* Direction */}
-            <div className="col-span-1 md:col-span-2 flex w-full shadow-sm rounded-xl overflow-hidden mt-2">
+            <div className="col-span-1 md:col-span-2 flex w-full shadow-sm mt-2">
               <button 
                 onClick={() => setDirection('Sell')}
-                className={`w-1/2 py-3.5 border text-base font-bold transition-all outline-none
-                  ${direction === 'Sell' ? 'border-rose-500/50 text-rose-400 bg-rose-500/10' : 'border-slate-700/60 text-slate-400 hover:bg-slate-800 hover:text-slate-300'}
+                className={`w-1/2 py-3.5 border rounded-l-xl text-base font-bold transition-all outline-none z-10
+                  ${direction === 'Sell' ? 'border-rose-500/50 text-rose-400 bg-rose-500/10' : 'border-slate-700/60 text-slate-400 hover:bg-slate-800 hover:text-slate-300 border-r-transparent'}
                 `}
               >
                 Sell
               </button>
               <button 
                 onClick={() => setDirection('Buy')}
-                className={`w-1/2 py-3.5 border-y border-r border-l-0 text-base font-bold transition-all outline-none
-                  ${direction === 'Buy' ? 'border-emerald-500/50 text-emerald-400 bg-emerald-500/10' : 'border-slate-700/60 text-slate-400 hover:bg-slate-800 hover:text-slate-300'}
+                className={`w-1/2 py-3.5 border rounded-r-xl text-base font-bold transition-all outline-none -ml-[1px]
+                  ${direction === 'Buy' ? 'border-emerald-500/50 text-emerald-400 bg-emerald-500/10 z-10' : 'border-slate-700/60 text-slate-400 hover:bg-slate-800 hover:text-slate-300 z-0'}
                 `}
               >
                 Buy
