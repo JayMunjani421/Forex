@@ -257,7 +257,7 @@ const Calculator = () => {
               </button>
               <button 
                 onClick={() => setDirection('Buy')}
-                className={`w-1/2 py-3.5 border rounded-r-xl text-base font-bold transition-all outline-none -ml-[1px]
+                className={`w-1/2 py-3.5 border rounded-r-xl text-base font-bold transition-all outline-none -ml-px
                   ${direction === 'Buy' ? 'border-emerald-500/50 text-emerald-400 bg-emerald-500/10 z-10' : 'border-slate-700/60 text-slate-400 hover:bg-slate-800 hover:text-slate-300 z-0'}
                 `}
               >
@@ -272,7 +272,7 @@ const Calculator = () => {
         <div className="lg:w-[35%] flex flex-col justify-center">
           <div className="bg-[#12192b]/80 border border-slate-700/60 rounded-3xl p-8 shadow-2xl relative overflow-hidden h-full flex flex-col justify-center">
             {/* Inner subtle glow */}
-            <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/5 to-purple-500/5 pointer-events-none"></div>
+            <div className="absolute inset-0 bg-linear-to-br from-indigo-500/5 to-purple-500/5 pointer-events-none"></div>
 
             <h3 className="text-base font-bold uppercase tracking-wider text-indigo-400 mb-8 flex items-center gap-3">
               Final Results
@@ -308,7 +308,7 @@ const Calculator = () => {
       <div className="mt-12 flex justify-end relative z-10">
         <button 
           onClick={handleCalculate}
-          className="w-full md:w-auto bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-400 hover:to-purple-500 text-white px-10 py-4 rounded-xl font-bold transition-all shadow-lg hover:shadow-indigo-500/25 active:scale-[0.98] focus:ring-4 focus:ring-indigo-500/20 text-lg flex items-center justify-center gap-2 group"
+          className="w-full md:w-auto bg-linear-to-r from-indigo-500 to-purple-600 hover:from-indigo-400 hover:to-purple-500 text-white px-10 py-4 rounded-xl font-bold transition-all shadow-lg hover:shadow-indigo-500/25 active:scale-[0.98] focus:ring-4 focus:ring-indigo-500/20 text-lg flex items-center justify-center gap-2 group"
         >
           Calculate
           <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>

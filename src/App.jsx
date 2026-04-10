@@ -2,12 +2,12 @@ import Calculator from './components/Calculator';
 
 function App() {
   return (
-    <main className="min-h-screen bg-[#070b14] bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-indigo-900/20 via-[#070b14] to-[#070b14] flex items-center justify-center p-4 py-8 lg:py-18">
+    <main className="min-h-screen bg-[#070b14] bg-[radial-gradient(ellipse_at_top,var(--tw-gradient-stops))] from-indigo-900/20 via-[#070b14] to-[#070b14] flex items-center justify-center p-4 py-8 lg:py-18">
       <div className="w-full max-w-6xl mx-auto space-y-10">
         
         {/* Header Text */}
         <div className="text-center space-y-4 max-w-3xl mx-auto px-4 relative z-10">
-          <h1 className="text-3xl md:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-indigo-400 to-purple-400 tracking-tight drop-shadow-sm">
+          <h1 className="text-3xl md:text-5xl font-extrabold text-transparent bg-clip-text bg-linear-to-r from-blue-400 via-indigo-400 to-purple-400 tracking-tight drop-shadow-sm">
             Real-Time Forex Profit Calculator
           </h1>
           <p className="text-indigo-100/70 text-base md:text-lg font-light leading-relaxed">
@@ -27,7 +27,7 @@ function App() {
               Related Tools
               <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
             </span>
-            <div className="absolute inset-0 bg-gradient-to-r from-indigo-600/20 to-purple-600/20 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+            <div className="absolute inset-0 bg-linear-to-r from-indigo-600/20 to-purple-600/20 opacity-0 group-hover:opacity-100 transition-opacity"></div>
           </button>
         </div>
       </div>
