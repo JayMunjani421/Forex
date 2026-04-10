@@ -38,8 +38,8 @@ const Calculator = () => {
 
   useEffect(() => {
     if (livePrice && !hasInitializedLivePrice) {
-      setOpenPrice(livePrice);
-      setClosePrice(parseFloat((livePrice - 0.0001).toFixed(5)));
+      setOpenPrice(livePrice.toFixed(5));
+      setClosePrice((livePrice - 0.0001).toFixed(5));
       setHasInitializedLivePrice(true);
     }
   }, [livePrice, hasInitializedLivePrice]);
@@ -55,10 +55,13 @@ const Calculator = () => {
     const contractSize = 100000;
     let profit = 0;
 
+    const parsedOpen = parseFloat(openPrice) || 0;
+    const parsedClose = parseFloat(closePrice) || 0;
+
     if (direction === 'Buy') {
-      profit = (closePrice - openPrice) * contractSize * volume;
+      profit = (parsedClose - parsedOpen) * contractSize * volume;
     } else {
-      profit = (openPrice - closePrice) * contractSize * volume;
+      profit = (parsedOpen - parsedClose) * contractSize * volume;
     }
 
     setResult({
@@ -69,13 +72,16 @@ const Calculator = () => {
     setHasCalculated(true);
   };
 
-  const increment = (setter, value, step) => {
-    setter(parseFloat((value + step).toFixed(4)));
+  const increment = (setter, value, step, formatDecimals) => {
+    const nextVal = parseFloat(value) + step;
+    setter(formatDecimals !== undefined ? nextVal.toFixed(formatDecimals) : parseFloat(nextVal.toFixed(4)));
   };
 
-  const decrement = (setter, value, step, min = 0) => {
-    const nextVal = value - step;
-    if (nextVal >= min) setter(parseFloat(nextVal.toFixed(4)));
+  const decrement = (setter, value, step, min = 0, formatDecimals) => {
+    const nextVal = parseFloat(value) - step;
+    if (nextVal >= min) {
+      setter(formatDecimals !== undefined ? nextVal.toFixed(formatDecimals) : parseFloat(nextVal.toFixed(4)));
+    }
   };
 
   return (
@@ -117,8 +123,8 @@ const Calculator = () => {
                 {livePrice && (
                   <button 
                     onClick={() => {
-                      setOpenPrice(livePrice);
-                      setClosePrice(parseFloat((livePrice - 0.0001).toFixed(5)));
+                      setOpenPrice(livePrice.toFixed(5));
+                      setClosePrice((livePrice - 0.0001).toFixed(5));
                     }}
                     className="text-[10px] text-blue-500 hover:text-blue-600 transition-colors flex items-center gap-1 bg-blue-50 px-1.5 py-0.5 rounded cursor-pointer"
                     title="Update to live price"
@@ -127,16 +133,22 @@ const Calculator = () => {
                   </button>
                 )}
               </label>
-              <button onClick={() => decrement(setOpenPrice, openPrice, 0.0001)} className="text-gray-400 hover:text-gray-700 transition-colors">
+              <button onClick={() => decrement(setOpenPrice, openPrice, 0.00001, 0, 5)} className="text-gray-400 hover:text-gray-700 transition-colors">
                 <Minus className="w-4 h-4" />
               </button>
               <input 
                 type="number" 
-                value={openPrice}
-                onChange={(e) => setOpenPrice(parseFloat(e.target.value) || 0)}
+                step="0.00001"
+                value={openPrice ?? ''}
+                onChange={(e) => setOpenPrice(e.target.value)}
+                onBlur={(e) => {
+                  if (e.target.value) {
+                    setOpenPrice(parseFloat(e.target.value).toFixed(5));
+                  }
+                }}
                 className="w-full text-center bg-transparent outline-none text-gray-900 font-medium"
               />
-              <button onClick={() => increment(setOpenPrice, openPrice, 0.0001)} className="text-gray-400 hover:text-gray-700 transition-colors">
+              <button onClick={() => increment(setOpenPrice, openPrice, 0.00001, 5)} className="text-gray-400 hover:text-gray-700 transition-colors">
                 <Plus className="w-4 h-4" />
               </button>
             </div>
@@ -164,8 +176,8 @@ const Calculator = () => {
                 {livePrice && (
                   <button 
                     onClick={() => {
-                      setOpenPrice(livePrice);
-                      setClosePrice(parseFloat((livePrice - 0.0001).toFixed(5)));
+                      setOpenPrice(livePrice.toFixed(5));
+                      setClosePrice((livePrice - 0.0001).toFixed(5));
                     }}
                     className="text-[10px] text-blue-500 hover:text-blue-600 transition-colors flex items-center gap-1 bg-blue-50 px-1.5 py-0.5 rounded cursor-pointer"
                     title="Update to live price"
@@ -174,16 +186,22 @@ const Calculator = () => {
                   </button>
                 )}
               </label>
-              <button onClick={() => decrement(setClosePrice, closePrice, 0.0001)} className="text-gray-400 hover:text-gray-700 transition-colors">
+              <button onClick={() => decrement(setClosePrice, closePrice, 0.00001, 0, 5)} className="text-gray-400 hover:text-gray-700 transition-colors">
                 <Minus className="w-4 h-4" />
               </button>
               <input 
                 type="number" 
-                value={closePrice}
-                onChange={(e) => setClosePrice(parseFloat(e.target.value) || 0)}
+                step="0.00001"
+                value={closePrice ?? ''}
+                onChange={(e) => setClosePrice(e.target.value)}
+                onBlur={(e) => {
+                  if (e.target.value) {
+                    setClosePrice(parseFloat(e.target.value).toFixed(5));
+                  }
+                }}
                 className="w-full text-center bg-transparent outline-none text-gray-900 font-medium"
               />
-              <button onClick={() => increment(setClosePrice, closePrice, 0.0001)} className="text-gray-400 hover:text-gray-700 transition-colors">
+              <button onClick={() => increment(setClosePrice, closePrice, 0.00001, 5)} className="text-gray-400 hover:text-gray-700 transition-colors">
                 <Plus className="w-4 h-4" />
               </button>
             </div>
