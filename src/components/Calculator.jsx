@@ -127,7 +127,7 @@ const Calculator = () => {
                   </button>
                 )}
               </label>
-              <button onClick={() => decrement(setOpenPrice, openPrice, 0.00001)} className="text-gray-400 hover:text-gray-700 transition-colors">
+              <button onClick={() => decrement(setOpenPrice, openPrice, 0.0001)} className="text-gray-400 hover:text-gray-700 transition-colors">
                 <Minus className="w-4 h-4" />
               </button>
               <input 
@@ -136,7 +136,7 @@ const Calculator = () => {
                 onChange={(e) => setOpenPrice(parseFloat(e.target.value) || 0)}
                 className="w-full text-center bg-transparent outline-none text-gray-900 font-medium"
               />
-              <button onClick={() => increment(setOpenPrice, openPrice, 0.00001)} className="text-gray-400 hover:text-gray-700 transition-colors">
+              <button onClick={() => increment(setOpenPrice, openPrice, 0.0001)} className="text-gray-400 hover:text-gray-700 transition-colors">
                 <Plus className="w-4 h-4" />
               </button>
             </div>
@@ -174,7 +174,7 @@ const Calculator = () => {
                   </button>
                 )}
               </label>
-              <button onClick={() => decrement(setClosePrice, closePrice, 0.00001)} className="text-gray-400 hover:text-gray-700 transition-colors">
+              <button onClick={() => decrement(setClosePrice, closePrice, 0.0001)} className="text-gray-400 hover:text-gray-700 transition-colors">
                 <Minus className="w-4 h-4" />
               </button>
               <input 
@@ -183,7 +183,7 @@ const Calculator = () => {
                 onChange={(e) => setClosePrice(parseFloat(e.target.value) || 0)}
                 className="w-full text-center bg-transparent outline-none text-gray-900 font-medium"
               />
-              <button onClick={() => increment(setClosePrice, closePrice, 0.00001)} className="text-gray-400 hover:text-gray-700 transition-colors">
+              <button onClick={() => increment(setClosePrice, closePrice, 0.0001)} className="text-gray-400 hover:text-gray-700 transition-colors">
                 <Plus className="w-4 h-4" />
               </button>
             </div>
