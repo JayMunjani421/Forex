@@ -274,7 +274,7 @@ const Calculator = () => {
             {/* Inner subtle glow */}
             <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/5 to-purple-500/5 pointer-events-none"></div>
 
-            <h3 className="text-[11px] font-bold uppercase tracking-wider text-indigo-400 mb-8 flex items-center gap-3">
+            <h3 className="text-xl font-bold uppercase tracking-wider text-indigo-400 mb-8 flex items-center gap-3">
               <span className="w-8 h-px bg-indigo-500/50"></span>
               Calculation Results
             </h3>
