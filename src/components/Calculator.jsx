@@ -109,7 +109,7 @@ const Calculator = () => {
               <select 
                 value={symbol}
                 onChange={(e) => setSymbol(e.target.value)}
-                className="w-full bg-transparent outline-none text-slate-100 font-medium cursor-pointer appearance-none mt-1"
+                className="w-full bg-transparent outline-none text-slate-100 font-semibold text-lg cursor-pointer appearance-none mt-1"
               >
                 <option value="EURUSD" className="bg-slate-900">EURUSD</option>
                 <option value="GBPUSD" className="bg-slate-900">GBPUSD</option>
@@ -150,7 +150,7 @@ const Calculator = () => {
                     setOpenPrice(parseFloat(e.target.value).toFixed(5));
                   }
                 }}
-                className="w-full text-center bg-transparent outline-none text-slate-100 font-medium mt-1"
+                className="w-full text-center bg-transparent outline-none text-slate-100 font-semibold text-lg mt-1"
               />
               <button onClick={() => increment(setOpenPrice, openPrice, 0.00001, 5)} className="text-slate-400 hover:text-indigo-400 transition-colors p-1 mt-1">
                 <Plus className="w-4 h-4" />
@@ -163,7 +163,7 @@ const Calculator = () => {
               <select 
                 value={currency}
                 onChange={(e) => setCurrency(e.target.value)}
-                className="w-full bg-transparent outline-none text-slate-100 font-medium cursor-pointer appearance-none mt-1"
+                className="w-full bg-transparent outline-none text-slate-100 font-semibold text-lg cursor-pointer appearance-none mt-1"
               >
                 <option value="USD" className="bg-slate-900">USD</option>
                 <option value="EUR" className="bg-slate-900">EUR</option>
@@ -203,7 +203,7 @@ const Calculator = () => {
                     setClosePrice(parseFloat(e.target.value).toFixed(5));
                   }
                 }}
-                className="w-full text-center bg-transparent outline-none text-slate-100 font-medium mt-1"
+                className="w-full text-center bg-transparent outline-none text-slate-100 font-semibold text-lg mt-1"
               />
               <button onClick={() => increment(setClosePrice, closePrice, 0.00001, 5)} className="text-slate-400 hover:text-indigo-400 transition-colors p-1 mt-1">
                 <Plus className="w-4 h-4" />
@@ -220,7 +220,7 @@ const Calculator = () => {
                 type="number" 
                 value={days}
                 onChange={(e) => setDays(parseFloat(e.target.value) || 1)}
-                className="w-full text-center bg-transparent outline-none text-slate-100 font-medium mt-1"
+                className="w-full text-center bg-transparent outline-none text-slate-100 font-semibold text-lg mt-1"
               />
               <button onClick={() => increment(setDays, days, 1)} className="text-slate-400 hover:text-indigo-400 transition-colors p-1 mt-1">
                 <Plus className="w-4 h-4" />
@@ -238,7 +238,7 @@ const Calculator = () => {
                 value={volume}
                 step="0.01"
                 onChange={(e) => setVolume(parseFloat(e.target.value) || 0)}
-                className="w-full text-center bg-transparent outline-none text-slate-100 font-medium mt-1"
+                className="w-full text-center bg-transparent outline-none text-slate-100 font-semibold text-lg mt-1"
               />
               <button onClick={() => increment(setVolume, volume, 0.01)} className="text-slate-400 hover:text-indigo-400 transition-colors p-1 mt-1">
                 <Plus className="w-4 h-4" />
@@ -249,7 +249,7 @@ const Calculator = () => {
             <div className="col-span-1 md:col-span-2 flex w-full shadow-sm rounded-xl overflow-hidden mt-2">
               <button 
                 onClick={() => setDirection('Sell')}
-                className={`w-1/2 py-3.5 border text-sm font-semibold transition-all outline-none
+                className={`w-1/2 py-3.5 border text-base font-bold transition-all outline-none
                   ${direction === 'Sell' ? 'border-rose-500/50 text-rose-400 bg-rose-500/10' : 'border-slate-700/60 text-slate-400 hover:bg-slate-800 hover:text-slate-300'}
                 `}
               >
@@ -257,7 +257,7 @@ const Calculator = () => {
               </button>
               <button 
                 onClick={() => setDirection('Buy')}
-                className={`w-1/2 py-3.5 border-y border-r border-l-0 text-sm font-semibold transition-all outline-none
+                className={`w-1/2 py-3.5 border-y border-r border-l-0 text-base font-bold transition-all outline-none
                   ${direction === 'Buy' ? 'border-emerald-500/50 text-emerald-400 bg-emerald-500/10' : 'border-slate-700/60 text-slate-400 hover:bg-slate-800 hover:text-slate-300'}
                 `}
               >
@@ -290,13 +290,13 @@ const Calculator = () => {
               <div className="space-y-5">
                 <div className="flex justify-between items-center group">
                   <span className="text-slate-500 text-sm group-hover:text-slate-400 transition-colors">Gross profit</span>
-                  <span className={`font-semibold ${!hasCalculated ? 'text-slate-600' : result.grossProfit < 0 ? 'text-rose-400' : 'text-slate-200'}`}>
+                  <span className={`font-bold text-lg ${!hasCalculated ? 'text-slate-600' : result.grossProfit < 0 ? 'text-rose-400' : 'text-slate-200'}`}>
                     {!hasCalculated ? '-' : `${result.grossProfit < 0 ? '-' : ''}$${Math.abs(result.grossProfit).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
                   </span>
                 </div>
                 <div className="flex justify-between items-center group">
                   <span className="text-slate-500 text-sm group-hover:text-slate-400 transition-colors">Trading fees</span>
-                  <span className={`font-semibold ${!hasCalculated ? 'text-slate-600' : 'text-slate-400'}`}>
+                  <span className={`font-bold text-lg ${!hasCalculated ? 'text-slate-600' : 'text-slate-400'}`}>
                     {!hasCalculated ? '-' : `-$${result.fees.toFixed(2)}`}
                   </span>
                 </div>

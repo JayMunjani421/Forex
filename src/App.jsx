@@ -2,15 +2,15 @@ import Calculator from './components/Calculator';
 
 function App() {
   return (
-    <main className="min-h-screen bg-[#070b14] bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-indigo-900/20 via-[#070b14] to-[#070b14] flex items-center justify-center p-4 py-16 lg:py-24">
-      <div className="w-full max-w-6xl mx-auto space-y-16">
+    <main className="min-h-screen bg-[#070b14] bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-indigo-900/20 via-[#070b14] to-[#070b14] flex items-center justify-center p-4 py-8 lg:py-12">
+      <div className="w-full max-w-6xl mx-auto space-y-10">
         
         {/* Header Text */}
-        <div className="text-center space-y-6 max-w-3xl mx-auto px-4 relative z-10">
-          <h1 className="text-4xl md:text-6xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-indigo-400 to-purple-400 tracking-tight drop-shadow-sm">
+        <div className="text-center space-y-4 max-w-3xl mx-auto px-4 relative z-10">
+          <h1 className="text-3xl md:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-indigo-400 to-purple-400 tracking-tight drop-shadow-sm">
             Real-Time Forex Profit Calculator
           </h1>
-          <p className="text-indigo-100/70 text-lg md:text-xl font-light leading-relaxed">
+          <p className="text-indigo-100/70 text-base md:text-lg font-light leading-relaxed">
             The Forex profit calculator is a risk management tool to improve your trading of currency pairs and other assets. Calculate potential profits and losses of your orders and trade financial markets more confidently.
           </p>
         </div>
