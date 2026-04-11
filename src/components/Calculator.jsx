@@ -1,6 +1,10 @@
 import { useState, useEffect } from 'react';
 import { Minus, Plus, RefreshCw } from 'lucide-react';
 
+const SYMBOLS = [
+  "EURUSD", "GBPUSD", "USDJPY", "USDCHF", "AUDUSD", "NZDUSD", "USDCAD", "EURGBP", "EURJPY", "GBPJPY", "EURCHF", "EURAUD", "EURNZD", "EURCAD", "GBPCHF", "GBPAUD", "GBPNZD", "GBPCAD", "CHFJPY", "AUDJPY", "AUDCHF", "AUDNZD", "AUDCAD", "NZDJPY", "NZDCHF", "NZDCAD", "CADJPY", "CADCHF", "XAGUSD", "XAUUSD", "XBRUSD", "XTIUSD", "XTIUSD.Daily", "XNGUSD", "AUS200", "EUSTX50", "UK100", "FRA40", "GER40", "ESP35", "JPN225", "NAS100", "SPX500", "US30", "BTCUSD", "ETHUSD", "XRPUSD", "ADAUSD", "SOLUSD", "DOTUSD", "LTCUSD", "TRXUSD", "LINKUSD", "MATICUSD", "AVAXUSD", "ATOMUSD", "DOGEUSD", "ALGOUSD", "DASHUSD", "ZECUSD", "FTMUSD", "ICPUSD", "LRCUSD", "UNIUSD", "FTTUSD", "USDMXN", "USDZAR", "GBPMXN", "GBPZAR", "AAPL.Daily", "AMZN.Daily", "BABA.Daily", "META.Daily", "MSFT.Daily", "NFLX.Daily", "SHOP.Daily", "GOOGL.Daily", "MMM.Daily", "TSLA.Daily", "NVDA.Daily", "AMD.Daily", "PYPL.Daily", "ADBE.Daily", "INTC.Daily", "CSCO.Daily", "CMCSA.Daily", "PEP.Daily", "COST.Daily", "AVGO.Daily", "TXN.Daily", "QCOM.Daily", "AMAT.Daily", "INTU.Daily", "SBUX.Daily", "MDLZ.Daily", "ISRG.Daily", "AMGN.Daily", "BKNG.Daily", "GILD.Daily", "ADP.Daily", "VRTX.Daily", "REGN.Daily", "FISV.Daily", "ATVI.Daily", "CSX.Daily", "MU.Daily", "MRVL.Daily", "LRCX.Daily", "ADI.Daily", "ADSK.Daily", "MELI.Daily", "KLAC.Daily", "SNPS.Daily", "CDNS.Daily", "MNST.Daily", "PAYX.Daily", "MAR.Daily", "ORLY.Daily", "KDP.Daily", "PANW.Daily", "EXC.Daily", "AEP.Daily", "BKR.Daily", "CTAS.Daily", "DXCM.Daily", "ROST.Daily", "NXPI.Daily", "IDXX.Daily", "PCAR.Daily", "MRNA.Daily", "AZN.Daily", "HON.Daily", "LULU.Daily"
+];
+
 const Calculator = () => {
   const [symbol, setSymbol] = useState('EURUSD');
   const [currency, setCurrency] = useState('USD');
@@ -84,6 +88,11 @@ const Calculator = () => {
     }
   };
 
+  const formatCurrencyValue = (val) => {
+    const sym = currency === 'EUR' ? '€' : '$';
+    return `${val < 0 ? '-' : ''}${sym}${Math.abs(val).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+  };
+
   return (
     <div className="w-full max-w-5xl mx-auto bg-[#0d1323]/80 backdrop-blur-2xl rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.5)] p-6 md:p-12 border border-white/5 relative overflow-hidden">
       {/* Decorative gradient blobs */}
@@ -111,9 +120,9 @@ const Calculator = () => {
                 onChange={(e) => setSymbol(e.target.value)}
                 className="w-full bg-transparent outline-none text-slate-100 font-semibold text-lg cursor-pointer appearance-none mt-1"
               >
-                <option value="EURUSD" className="bg-slate-900">EURUSD</option>
-                <option value="GBPUSD" className="bg-slate-900">GBPUSD</option>
-                <option value="USDJPY" className="bg-slate-900">USDJPY</option>
+                {SYMBOLS.map(sym => (
+                  <option key={sym} value={sym} className="bg-slate-900">{sym}</option>
+                ))}
               </select>
               <div className="pointer-events-none absolute inset-y-0 right-4 flex items-center text-slate-500 mt-1">
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
@@ -282,7 +291,7 @@ const Calculator = () => {
               <div className="flex justify-between items-end pb-6 border-b border-white/5">
                 <span className="text-slate-400 font-medium">Profit</span>
                 <span className={`text-4xl font-extrabold tracking-tight ${!hasCalculated ? 'text-slate-600' : result.profit < 0 ? 'text-rose-400' : 'text-emerald-400'}`}>
-                  {!hasCalculated ? '-' : `${result.profit < 0 ? '-' : ''}$${Math.abs(result.profit).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
+                  {!hasCalculated ? '-' : formatCurrencyValue(result.profit)}
                 </span>
               </div>
 
@@ -290,13 +299,13 @@ const Calculator = () => {
                 <div className="flex justify-between items-center group">
                   <span className="text-slate-500 text-sm group-hover:text-slate-400 transition-colors">Gross profit</span>
                   <span className={`font-bold text-lg ${!hasCalculated ? 'text-slate-600' : result.grossProfit < 0 ? 'text-rose-400' : 'text-slate-200'}`}>
-                    {!hasCalculated ? '-' : `${result.grossProfit < 0 ? '-' : ''}$${Math.abs(result.grossProfit).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
+                    {!hasCalculated ? '-' : formatCurrencyValue(result.grossProfit)}
                   </span>
                 </div>
                 <div className="flex justify-between items-center group">
                   <span className="text-slate-500 text-sm group-hover:text-slate-400 transition-colors">Trading fees</span>
                   <span className={`font-bold text-lg ${!hasCalculated ? 'text-slate-600' : 'text-slate-400'}`}>
-                    {!hasCalculated ? '-' : `-$${result.fees.toFixed(2)}`}
+                    {!hasCalculated ? '-' : `-${currency === 'EUR' ? '€' : '$'}${result.fees.toFixed(2)}`}
                   </span>
                 </div>
               </div>
