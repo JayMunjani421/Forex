@@ -41,23 +41,15 @@ const Charts = () => {
 
         setBtcData(formattedBtc);
 
-        // Fetch XAUUSD from currencyappllc
-        const xauRes = await fetch('https://api.currencyappllc.com/v1/graph/XAU/USD?interval=1d', {
-          headers: {
-            'Host': 'api.currencyappllc.com',
-            'accept': '/',
-            'user-agent': 'Currency/109 CFNetwork/1496.0.7 Darwin/23.5.0',
-            'accept-language': 'en-GB,en;q=0.9'
-          }
-        });
+        // Fetch XAUUSD equivalent (PAXGUSD) from Kraken (No CORS issue)
+        const xauRes = await fetch('https://api.kraken.com/0/public/OHLC?pair=PAXGUSD&interval=60');
         const xauJson = await xauRes.json();
+        const xauPairData = Object.values(xauJson.result || {}).find(v => Array.isArray(v)) || [];
         
-        const formattedXau = Object.entries(xauJson)
-          .map(([dateString, price]) => ({
-            time: format(new Date(dateString), 'MMM dd, HH:mm'),
-            price: price
-          }))
-          .slice(-100); // Last 100 periods
+        const formattedXau = xauPairData.map(d => ({
+          time: format(new Date(d[0] * 1000), 'MMM dd, HH:mm'),
+          price: parseFloat(d[4]) // Close price
+        })).slice(-100); // Last 100 periods
           
         setXauData(formattedXau);
 
@@ -118,7 +110,7 @@ const Charts = () => {
               <span className="w-2 h-2 rounded-full bg-yellow-400"></span>
               XAU/USD (Gold)
             </h3>
-            <span className="text-xs font-semibold px-2 py-1 bg-slate-800 text-slate-400 rounded-md">Daily</span>
+            <span className="text-xs font-semibold px-2 py-1 bg-slate-800 text-slate-400 rounded-md">Hourly</span>
           </div>
           <div className="h-64 w-full">
             <ResponsiveContainer width="100%" height="100%">
