@@ -1,8 +1,11 @@
 import Calculator from './components/Calculator';
+import Charts from './components/Charts';
+import News from './components/News';
+import ForexInfo from './components/ForexInfo';
 
 function App() {
   return (
-    <main className="min-h-screen bg-[#070b14] bg-[radial-gradient(ellipse_at_top,var(--tw-gradient-stops))] from-indigo-900/20 via-[#070b14] to-[#070b14] flex items-center justify-center p-4 py-8 lg:py-18">
+    <main className="min-h-screen bg-[#070b14] bg-[radial-gradient(ellipse_at_top,var(--tw-gradient-stops))] from-indigo-900/20 via-[#070b14] to-[#070b14] flex flex-col items-center p-4 py-8 lg:py-18">
       <div className="w-full max-w-6xl mx-auto space-y-10">
         
         {/* Header Text */}
@@ -16,8 +19,23 @@ function App() {
         </div>
 
         {/* Calculator Widget */}
-        <div className="px-2 md:px-0 relative z-10">
+        <div className="px-2 md:px-0 relative z-10 w-full">
           <Calculator />
+        </div>
+
+        {/* Educational Info */}
+        <div className="px-2 md:px-0 relative z-10 w-full">
+          <ForexInfo />
+        </div>
+
+        {/* Live Charts */}
+        <div className="px-2 md:px-0 relative z-10 w-full">
+          <Charts />
+        </div>
+
+        {/* Live News */}
+        <div className="px-2 md:px-0 relative z-10 w-full">
+          <News />
         </div>
 
         {/* Related Tools section */}

@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Minus, Plus, RefreshCw } from 'lucide-react';
 
 const SYMBOLS = [
-  "EURUSD", "GBPUSD", "USDJPY", "USDCHF", "AUDUSD", "NZDUSD", "USDCAD", "EURGBP", "EURJPY", "GBPJPY", "EURCHF", "EURAUD", "EURNZD", "EURCAD", "GBPCHF", "GBPAUD", "GBPNZD", "GBPCAD", "CHFJPY", "AUDJPY", "AUDCHF", "AUDNZD", "AUDCAD", "NZDJPY", "NZDCHF", "NZDCAD", "CADJPY", "CADCHF", "XAGUSD", "XAUUSD", "XBRUSD", "XTIUSD", "XTIUSD.Daily", "XNGUSD", "AUS200", "EUSTX50", "UK100", "FRA40", "GER40", "ESP35", "JPN225", "NAS100", "SPX500", "US30", "BTCUSD", "ETHUSD", "XRPUSD", "ADAUSD", "SOLUSD", "DOTUSD", "LTCUSD", "TRXUSD", "LINKUSD", "MATICUSD", "AVAXUSD", "ATOMUSD", "DOGEUSD", "ALGOUSD", "DASHUSD", "ZECUSD", "FTMUSD", "ICPUSD", "LRCUSD", "UNIUSD", "FTTUSD", "USDMXN", "USDZAR", "GBPMXN", "GBPZAR", "AAPL.Daily", "AMZN.Daily", "BABA.Daily", "META.Daily", "MSFT.Daily", "NFLX.Daily", "SHOP.Daily", "GOOGL.Daily", "MMM.Daily", "TSLA.Daily", "NVDA.Daily", "AMD.Daily", "PYPL.Daily", "ADBE.Daily", "INTC.Daily", "CSCO.Daily", "CMCSA.Daily", "PEP.Daily", "COST.Daily", "AVGO.Daily", "TXN.Daily", "QCOM.Daily", "AMAT.Daily", "INTU.Daily", "SBUX.Daily", "MDLZ.Daily", "ISRG.Daily", "AMGN.Daily", "BKNG.Daily", "GILD.Daily", "ADP.Daily", "VRTX.Daily", "REGN.Daily", "FISV.Daily", "ATVI.Daily", "CSX.Daily", "MU.Daily", "MRVL.Daily", "LRCX.Daily", "ADI.Daily", "ADSK.Daily", "MELI.Daily", "KLAC.Daily", "SNPS.Daily", "CDNS.Daily", "MNST.Daily", "PAYX.Daily", "MAR.Daily", "ORLY.Daily", "KDP.Daily", "PANW.Daily", "EXC.Daily", "AEP.Daily", "BKR.Daily", "CTAS.Daily", "DXCM.Daily", "ROST.Daily", "NXPI.Daily", "IDXX.Daily", "PCAR.Daily", "MRNA.Daily", "AZN.Daily", "HON.Daily", "LULU.Daily"
+  "EURUSD", "GBPUSD", "USDJPY", "USDCHF", "AUDUSD", "NZDUSD", "USDCAD", "EURGBP", "EURJPY", "GBPJPY", "EURCHF", "EURAUD", "EURNZD", "EURCAD", "GBPCHF", "GBPAUD", "GBPNZD", "GBPCAD", "CHFJPY", "AUDJPY", "AUDCHF", "AUDNZD", "AUDCAD", "NZDJPY", "NZDCHF", "NZDCAD", "CADJPY", "CADCHF", "XAGUSD", "XAUUSD", "UK100", "FRA40", "GER40", "NAS100", "USDMXN", "USDZAR"
 ];
 
 const Calculator = () => {
@@ -13,20 +13,27 @@ const Calculator = () => {
   const [openPrice, setOpenPrice] = useState();
   const [closePrice, setClosePrice] = useState();
   const [direction, setDirection] = useState('Buy');
-  const [livePrice, setLivePrice] = useState(null);
+  const [liveData, setLiveData] = useState(null);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [rates, setRates] = useState({});
   const [hasInitializedLivePrice, setHasInitializedLivePrice] = useState(false);
   const [hasCalculated, setHasCalculated] = useState(false);
 
   useEffect(() => {
     setHasInitializedLivePrice(false);
-    setLivePrice(null);
+    setLiveData(null);
     let intervalId;
     const fetchLivePrice = async () => {
       try {
-        const res = await fetch(`https://www.fxtm.com/informers/rates/symbols?symbols=${symbol}`);
+        const symbolsToFetch = [...new Set([symbol, 'EURUSD', 'GBPUSD', 'AUDUSD', 'NZDUSD', 'USDJPY', 'USDCHF', 'USDCAD', 'USDMXN', 'USDZAR'])].join(',');
+        const res = await fetch(`https://www.fxtm.com/informers/rates/symbols?symbols=${symbolsToFetch}`);
         const data = await res.json();
-        if (data && data[symbol] && data[symbol].bid) {
-          setLivePrice(parseFloat(data[symbol].bid));
+        if (data) {
+          setRates(data);
+          if (data[symbol]) {
+            setLiveData(data[symbol]);
+          }
         }
       } catch (err) {
         console.error('Error fetching live price:', err);
@@ -41,37 +48,77 @@ const Calculator = () => {
   }, [symbol]);
 
   useEffect(() => {
-    if (livePrice && !hasInitializedLivePrice) {
-      setOpenPrice(livePrice.toFixed(5));
-      setClosePrice((livePrice - 0.0001).toFixed(5));
+    if (liveData && !hasInitializedLivePrice) {
+      const digits = liveData.digits || 5;
+      setOpenPrice((direction === 'Buy' ? liveData.ask : liveData.bid).toFixed(digits));
+      setClosePrice((direction === 'Buy' ? liveData.bid : liveData.ask).toFixed(digits));
       setHasInitializedLivePrice(true);
     }
-  }, [livePrice, hasInitializedLivePrice]);
+  }, [liveData, hasInitializedLivePrice, direction]);
 
   const [result, setResult] = useState({
     profit: 0.0,
     grossProfit: 0.0,
     fees: 0.0,
+    currency: 'USD'
   });
 
   const handleCalculate = () => {
-    // Standard contract size is 100,000 units
-    const contractSize = 100000;
-    let profit = 0;
-
+    const CONTRACT_SIZES = {
+      XAUUSD: 100,
+      XAGUSD: 5000,
+      UK100: 10,
+      FRA40: 10,
+      GER40: 10,
+      NAS100: 10,
+    };
+    const contractSize = CONTRACT_SIZES[symbol] || 100000;
+    
     const parsedOpen = parseFloat(openPrice) || 0;
     const parsedClose = parseFloat(closePrice) || 0;
 
+    let baseProfit = 0;
     if (direction === 'Buy') {
-      profit = (parsedClose - parsedOpen) * contractSize * volume;
+      baseProfit = (parsedClose - parsedOpen) * contractSize * volume;
     } else {
-      profit = (parsedOpen - parsedClose) * contractSize * volume;
+      baseProfit = (parsedOpen - parsedClose) * contractSize * volume;
+    }
+
+    // Convert Quote Currency to USD
+    let profitInUSD = baseProfit;
+    const getQuoteCurrency = (sym) => {
+      if (sym === 'UK100') return 'GBP';
+      if (sym === 'FRA40' || sym === 'GER40') return 'EUR';
+      if (sym === 'NAS100') return 'USD';
+      if (sym.length === 6) return sym.substring(3, 6);
+      return 'USD';
+    };
+    
+    const quoteCur = getQuoteCurrency(symbol);
+    
+    if (quoteCur !== 'USD') {
+      if (quoteCur === 'EUR' && rates['EURUSD']) profitInUSD = baseProfit * rates['EURUSD'].bid;
+      else if (quoteCur === 'GBP' && rates['GBPUSD']) profitInUSD = baseProfit * rates['GBPUSD'].bid;
+      else if (quoteCur === 'AUD' && rates['AUDUSD']) profitInUSD = baseProfit * rates['AUDUSD'].bid;
+      else if (quoteCur === 'NZD' && rates['NZDUSD']) profitInUSD = baseProfit * rates['NZDUSD'].bid;
+      else if (quoteCur === 'JPY' && rates['USDJPY']) profitInUSD = baseProfit / rates['USDJPY'].bid;
+      else if (quoteCur === 'CHF' && rates['USDCHF']) profitInUSD = baseProfit / rates['USDCHF'].bid;
+      else if (quoteCur === 'CAD' && rates['USDCAD']) profitInUSD = baseProfit / rates['USDCAD'].bid;
+      else if (quoteCur === 'MXN' && rates['USDMXN']) profitInUSD = baseProfit / rates['USDMXN'].bid;
+      else if (quoteCur === 'ZAR' && rates['USDZAR']) profitInUSD = baseProfit / rates['USDZAR'].bid;
+    }
+
+    // Convert to Account Currency
+    let finalProfit = profitInUSD;
+    if (currency === 'EUR' && rates['EURUSD']) {
+      finalProfit = profitInUSD / rates['EURUSD'].bid;
     }
 
     setResult({
-      profit: parseFloat(profit.toFixed(2)),
-      grossProfit: parseFloat(profit.toFixed(2)),
+      profit: parseFloat(finalProfit.toFixed(2)),
+      grossProfit: parseFloat(finalProfit.toFixed(2)),
       fees: 0.0,
+      currency: currency
     });
     setHasCalculated(true);
   };
@@ -89,7 +136,7 @@ const Calculator = () => {
   };
 
   const formatCurrencyValue = (val) => {
-    const sym = currency === 'EUR' ? '€' : '$';
+    const sym = result.currency === 'EUR' ? '€' : '$';
     return `${val < 0 ? '-' : ''}${sym}${Math.abs(val).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
   };
 
@@ -108,24 +155,59 @@ const Calculator = () => {
             <div className="relative border border-slate-700/60 bg-[#12192b]/80 rounded-2xl px-4 py-3.5 focus-within:border-indigo-500 focus-within:ring-1 focus-within:ring-indigo-500 transition-all shadow-inner">
               <label className="absolute -top-3 left-4 flex items-center gap-2 bg-[#0c1221] px-2 text-[11px] font-bold uppercase tracking-wider text-indigo-300 rounded-md">
                 Symbol
-                {livePrice && (
+                {liveData && (
                   <span className="text-emerald-400 font-medium flex items-center gap-1.5 ml-2 normal-case tracking-normal" title="Live Market Price">
                     <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse border border-emerald-300"></span>
-                    {livePrice.toFixed(5)}
+                    {liveData.bid.toFixed(liveData.digits || 5)}
                   </span>
                 )}
               </label>
-              <select 
-                value={symbol}
-                onChange={(e) => setSymbol(e.target.value)}
-                className="w-full bg-transparent outline-none text-slate-100 font-semibold text-lg cursor-pointer appearance-none mt-1"
+              <div 
+                className="w-full mt-1 relative"
+                onClick={() => setIsDropdownOpen(true)}
               >
-                {SYMBOLS.map(sym => (
-                  <option key={sym} value={sym} className="bg-slate-900">{sym}</option>
-                ))}
-              </select>
-              <div className="pointer-events-none absolute inset-y-0 right-4 flex items-center text-slate-500 mt-1">
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
+                <div className="flex justify-between items-center cursor-pointer">
+                  <span className="text-slate-100 font-semibold text-lg">{symbol}</span>
+                  <svg className="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
+                </div>
+                
+                {isDropdownOpen && (
+                  <>
+                    <div className="fixed inset-0 z-40" onClick={(e) => { e.stopPropagation(); setIsDropdownOpen(false); }}></div>
+                    <div className="absolute top-full left-0 right-0 mt-2 bg-[#12192b] border border-slate-700/60 rounded-xl shadow-[0_10px_40px_rgba(0,0,0,0.8)] z-50 p-2">
+                      <div className="relative mb-2">
+                        <input 
+                          type="text"
+                          autoFocus
+                          placeholder="Search symbols..."
+                          value={searchQuery}
+                          onChange={(e) => setSearchQuery(e.target.value)}
+                          className="w-full bg-[#0c1221] border border-slate-700/60 rounded-lg px-3 py-2 text-sm text-slate-200 outline-none focus:border-indigo-500"
+                          onClick={(e) => e.stopPropagation()}
+                        />
+                      </div>
+                      <div className="max-h-48 overflow-y-auto custom-scrollbar">
+                        {SYMBOLS.filter(sym => sym.toLowerCase().includes(searchQuery.toLowerCase())).map(sym => (
+                          <div 
+                            key={sym} 
+                            className={`px-3 py-2 rounded-lg cursor-pointer text-sm font-medium ${symbol === sym ? 'bg-indigo-500/20 text-indigo-400' : 'text-slate-300 hover:bg-slate-800'}`}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setSymbol(sym);
+                              setIsDropdownOpen(false);
+                              setSearchQuery('');
+                            }}
+                          >
+                            {sym}
+                          </div>
+                        ))}
+                        {SYMBOLS.filter(sym => sym.toLowerCase().includes(searchQuery.toLowerCase())).length === 0 && (
+                          <div className="px-3 py-2 text-slate-500 text-sm text-center">No symbols found</div>
+                        )}
+                      </div>
+                    </div>
+                  </>
+                )}
               </div>
             </div>
 
@@ -133,14 +215,13 @@ const Calculator = () => {
             <div className="relative border border-slate-700/60 bg-[#12192b]/80 rounded-2xl px-4 py-3.5 flex items-center justify-between focus-within:border-indigo-500 focus-within:ring-1 focus-within:ring-indigo-500 transition-all shadow-inner">
               <label className="absolute -top-3 left-4 bg-[#0c1221] px-2 text-[11px] font-bold uppercase tracking-wider text-indigo-300 rounded-md flex items-center gap-2">
                 Open price
-                {livePrice && (
+                {liveData && (
                   <button 
                     onClick={() => {
-                      setOpenPrice(livePrice.toFixed(5));
-                      setClosePrice((livePrice - 0.0001).toFixed(5));
+                      setOpenPrice((direction === 'Buy' ? liveData.ask : liveData.bid).toFixed(liveData.digits || 5));
                     }}
                     className="text-[10px] text-indigo-400 hover:text-indigo-300 transition-colors flex items-center gap-1 bg-indigo-500/10 hover:bg-indigo-500/20 px-1.5 py-0.5 rounded cursor-pointer ml-1 normal-case tracking-normal"
-                    title="Update to live price"
+                    title="Update to live prices"
                   >
                     <RefreshCw className="w-2.5 h-2.5" />
                   </button>
@@ -186,14 +267,13 @@ const Calculator = () => {
             <div className="relative border border-slate-700/60 bg-[#12192b]/80 rounded-2xl px-4 py-3.5 flex items-center justify-between focus-within:border-indigo-500 focus-within:ring-1 focus-within:ring-indigo-500 transition-all shadow-inner">
               <label className="absolute -top-3 left-4 bg-[#0c1221] px-2 text-[11px] font-bold uppercase tracking-wider text-indigo-300 rounded-md flex items-center gap-2">
                 Close price
-                {livePrice && (
+                {liveData && (
                   <button 
                     onClick={() => {
-                      setOpenPrice(livePrice.toFixed(5));
-                      setClosePrice((livePrice - 0.0001).toFixed(5));
+                      setClosePrice((direction === 'Buy' ? liveData.bid : liveData.ask).toFixed(liveData.digits || 5));
                     }}
                     className="text-[10px] text-indigo-400 hover:text-indigo-300 transition-colors flex items-center gap-1 bg-indigo-500/10 hover:bg-indigo-500/20 px-1.5 py-0.5 rounded cursor-pointer ml-1 normal-case tracking-normal"
-                    title="Update to live price"
+                    title="Update to live prices"
                   >
                     <RefreshCw className="w-2.5 h-2.5" />
                   </button>
@@ -305,7 +385,7 @@ const Calculator = () => {
                 <div className="flex justify-between items-center group">
                   <span className="text-slate-500 text-sm group-hover:text-slate-400 transition-colors">Trading fees</span>
                   <span className={`font-bold text-lg ${!hasCalculated ? 'text-slate-600' : 'text-slate-400'}`}>
-                    {!hasCalculated ? '-' : `-${currency === 'EUR' ? '€' : '$'}${result.fees.toFixed(2)}`}
+                    {!hasCalculated ? '-' : `-${result.currency === 'EUR' ? '€' : '$'}${result.fees.toFixed(2)}`}
                   </span>
                 </div>
               </div>
