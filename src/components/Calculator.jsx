@@ -154,8 +154,8 @@ const Calculator = () => {
 
       <div className="flex flex-col lg:flex-row gap-12 lg:gap-20 relative z-10">
         {/* Left Side: Form */}
-        <div className="flex-1 space-y-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div className="flex-1 flex flex-col">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
             
             {/* Symbol */}
             <div className="relative border border-slate-700/60 bg-[#12192b]/80 rounded-2xl px-4 py-3.5 focus-within:border-indigo-500 focus-within:ring-1 focus-within:ring-indigo-500 transition-all shadow-inner">
@@ -352,26 +352,26 @@ const Calculator = () => {
               </button>
             </div>
 
-            {/* Direction */}
-            <div className="col-span-1 md:col-span-2 flex w-full shadow-sm mt-2">
-              <button 
-                onClick={() => setDirection('Sell')}
-                className={`w-1/2 py-3.5 border rounded-l-xl text-base font-bold transition-all outline-none z-10
-                  ${direction === 'Sell' ? 'border-rose-500/50 text-rose-400 bg-rose-500/10' : 'border-slate-700/60 text-slate-400 hover:bg-slate-800 hover:text-slate-300 border-r-transparent'}
-                `}
-              >
-                Sell
-              </button>
-              <button 
-                onClick={() => setDirection('Buy')}
-                className={`w-1/2 py-3.5 border rounded-r-xl text-base font-bold transition-all outline-none -ml-px
-                  ${direction === 'Buy' ? 'border-emerald-500/50 text-emerald-400 bg-emerald-500/10 z-10' : 'border-slate-700/60 text-slate-400 hover:bg-slate-800 hover:text-slate-300 z-0'}
-                `}
-              >
-                Buy
-              </button>
-            </div>
+          </div>
 
+          {/* Direction */}
+          <div className="flex w-full shadow-sm mt-auto">
+            <button 
+              onClick={() => setDirection('Sell')}
+              className={`w-1/2 py-3.5 border rounded-l-xl text-base font-bold transition-all outline-none z-10
+                ${direction === 'Sell' ? 'border-rose-500/50 text-rose-400 bg-rose-500/10' : 'border-slate-700/60 text-slate-400 hover:bg-slate-800 hover:text-slate-300 border-r-transparent'}
+              `}
+            >
+              Sell
+            </button>
+            <button 
+              onClick={() => setDirection('Buy')}
+              className={`w-1/2 py-3.5 border rounded-r-xl text-base font-bold transition-all outline-none -ml-px
+                ${direction === 'Buy' ? 'border-emerald-500/50 text-emerald-400 bg-emerald-500/10 z-10' : 'border-slate-700/60 text-slate-400 hover:bg-slate-800 hover:text-slate-300 z-0'}
+              `}
+            >
+              Buy
+            </button>
           </div>
         </div>
 
