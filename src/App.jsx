@@ -7,6 +7,14 @@ import ForexInfo from './components/ForexInfo';
 
 function App() {
   const [activeTab, setActiveTab] = useState('profit');
+  const [isNavDropdownOpen, setIsNavDropdownOpen] = useState(false);
+
+  const tabs = [
+    { id: 'margin', label: 'Margin Calculator' },
+    { id: 'profit', label: 'Profit/Loss Calculator' },
+    { id: 'lotsize', label: 'Lot Size Calculator' },
+    { id: 'swap', label: 'Swap Calculator' }
+  ];
 
   return (
     <main className="min-h-screen bg-[#070b14] bg-[radial-gradient(ellipse_at_top,var(--tw-gradient-stops))] from-indigo-900/20 via-[#070b14] to-[#070b14] flex flex-col items-center p-4 py-8 lg:py-18">
@@ -15,21 +23,23 @@ function App() {
         {/* Header Text */}
         <div className="text-center space-y-4 max-w-3xl mx-auto px-4 relative z-10">
           <h1 className="text-3xl md:text-5xl font-extrabold text-transparent bg-clip-text bg-linear-to-r from-blue-400 via-indigo-400 to-purple-400 tracking-tight drop-shadow-sm">
-            {activeTab === 'profit' ? 'Real-Time Forex Profit Calculator' : activeTab === 'lotsize' ? 'Lot Size Calculator' : 'Forex Calculators'}
+            {activeTab === 'profit' ? 'Real-Time Profit Calculator' : activeTab === 'lotsize' ? 'Lot Size Calculator' : 'Forex Calculators'}
           </h1>
           <p className="text-indigo-100/70 text-base md:text-lg font-light leading-relaxed">
             {activeTab === 'profit' 
-              ? 'The Forex profit calculator is a risk management tool to improve your trading of currency pairs and other assets. Calculate potential profits and losses of your orders and trade financial markets more confidently.'
+              ? 'The profit calculator is a risk management tool to improve your trading of currency pairs and other assets. Calculate potential profits and losses of your orders and trade financial markets more confidently.'
               : activeTab === 'lotsize'
-                ? 'Our Lot Size Calculator allows you to calculate the optimal Lot Size for your trades. This tool helps you manage risk effectively by determining position size that aligns with your trading plan for your trades.'
+                ? 'The Lot Size Calculator helps you determine the ideal position size for your trades. It supports effective risk management by aligning your trade size with your overall strategy.'
                 : 'Select the calculator you need from the options below to help manage your trades.'
             }
           </p>
         </div>
 
         {/* Navigation Tabs */}
-        <div className="flex justify-center flex-wrap gap-2 md:gap-4 px-4 relative z-10 mb-2 mt-6">
-          <div className="flex bg-[#0d1323]/50 p-2 border border-white/5 rounded-full backdrop-blur-md shadow-lg shadow-black/20 gap-2 flex-wrap justify-center">
+        <div className="flex justify-center px-4 relative z-50 mb-2 mt-6 w-full">
+          
+          {/* Desktop Tabs */}
+          <div className="hidden md:flex bg-[#0d1323]/50 p-2 border border-white/5 rounded-full backdrop-blur-md shadow-lg shadow-black/20 gap-2 flex-wrap justify-center">
             <button 
               onClick={() => setActiveTab('margin')}
               className={`px-5 py-2.5 rounded-full text-sm font-semibold transition-all duration-300 ${activeTab === 'margin' ? 'bg-[#1e293b] border border-slate-600/50 shadow-md text-white' : 'bg-transparent text-slate-400 hover:text-slate-200 hover:bg-white/5'}`}
@@ -54,6 +64,40 @@ function App() {
             >
               Swap Calculator
             </button>
+          </div>
+
+          {/* Mobile Custom Dropdown */}
+          <div className="md:hidden w-full max-w-sm relative mx-auto">
+            <div 
+              className={`w-full bg-[#12192b]/95 text-slate-200 border ${isNavDropdownOpen ? 'border-indigo-500 ring-1 ring-indigo-500' : 'border-slate-700/60'} rounded-2xl px-4 py-3.5 flex items-center justify-between shadow-xl cursor-pointer transition-all`}
+              onClick={() => setIsNavDropdownOpen(!isNavDropdownOpen)}
+            >
+              <div className="flex items-center gap-3">
+                <svg className="w-5 h-5 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h7"></path></svg>
+                <span className="font-bold text-base">{tabs.find(t => t.id === activeTab)?.label}</span>
+              </div>
+              <svg className={`w-5 h-5 text-slate-400 transition-transform ${isNavDropdownOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
+            </div>
+            
+            {isNavDropdownOpen && (
+              <>
+                <div className="fixed inset-0 z-40" onClick={() => setIsNavDropdownOpen(false)}></div>
+                <div className="absolute top-full left-0 right-0 mt-2 bg-[#12192b] border border-slate-700/60 rounded-xl shadow-[0_10px_40px_rgba(0,0,0,0.8)] z-50 overflow-hidden">
+                  {tabs.map(tab => (
+                    <div 
+                      key={tab.id}
+                      className={`px-5 py-3.5 cursor-pointer text-base font-medium transition-colors ${activeTab === tab.id ? 'bg-indigo-500/20 text-indigo-400' : 'text-slate-300 hover:bg-slate-800'}`}
+                      onClick={() => {
+                        setActiveTab(tab.id);
+                        setIsNavDropdownOpen(false);
+                      }}
+                    >
+                      {tab.label}
+                    </div>
+                  ))}
+                </div>
+              </>
+            )}
           </div>
         </div>
 
