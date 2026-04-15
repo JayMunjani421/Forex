@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Minus, Plus, RefreshCw } from 'lucide-react';
 
 const SYMBOLS = [
-  "EURUSD", "GBPUSD", "USDJPY", "USDCHF", "AUDUSD", "NZDUSD", "USDCAD", "EURGBP", "EURJPY", "GBPJPY", "EURCHF", "EURAUD", "EURNZD", "EURCAD", "GBPCHF", "GBPAUD", "GBPNZD", "GBPCAD", "CHFJPY", "AUDJPY", "AUDCHF", "AUDNZD", "AUDCAD", "NZDJPY", "NZDCHF", "NZDCAD", "CADJPY", "CADCHF", "XAGUSD", "XAUUSD", "UK100", "FRA40", "GER40", "NAS100", "USDMXN", "USDZAR"
+  "EURUSD", "GBPUSD", "USDJPY", "USDCHF", "AUDUSD", "NZDUSD", "USDCAD", "EURGBP", "EURJPY", "GBPJPY", "EURCHF", "EURAUD", "EURNZD", "EURCAD", "GBPCHF", "GBPAUD", "GBPNZD", "GBPCAD", "CHFJPY", "AUDJPY", "AUDCHF", "AUDNZD", "AUDCAD", "NZDJPY", "NZDCHF", "NZDCAD", "CADJPY", "CADCHF", "XAGUSD", "XAUUSD", "UK100", "GER40", "NAS100", "USDMXN", "USDZAR"
 ];
 
 const Calculator = () => {
@@ -19,6 +19,7 @@ const Calculator = () => {
   const [rates, setRates] = useState({});
   const [hasInitializedLivePrice, setHasInitializedLivePrice] = useState(false);
   const [hasCalculated, setHasCalculated] = useState(false);
+  const [isCurrencyDropdownOpen, setIsCurrencyDropdownOpen] = useState(false);
 
   useEffect(() => {
     setHasInitializedLivePrice(false);
@@ -50,11 +51,16 @@ const Calculator = () => {
   useEffect(() => {
     if (liveData && !hasInitializedLivePrice) {
       const digits = liveData.digits || 5;
-      setOpenPrice((direction === 'Buy' ? liveData.ask : liveData.bid).toFixed(digits));
-      setClosePrice((direction === 'Buy' ? liveData.bid : liveData.ask).toFixed(digits));
+      const openPriceVal = liveData.bid;
+      const pipOffset = Math.pow(10, -(digits - 1));
+      setOpenPrice(openPriceVal.toFixed(digits));
+      setClosePrice((openPriceVal - pipOffset).toFixed(digits));
       setHasInitializedLivePrice(true);
     }
   }, [liveData, hasInitializedLivePrice, direction]);
+
+  const currentDigits = liveData?.digits || 5;
+  const currentStep = Number(Math.pow(10, -currentDigits).toFixed(currentDigits));
 
   const [result, setResult] = useState({
     profit: 0.0,
@@ -186,11 +192,11 @@ const Calculator = () => {
                           onClick={(e) => e.stopPropagation()}
                         />
                       </div>
-                      <div className="max-h-48 overflow-y-auto custom-scrollbar">
+                      <div className="max-h-80 overflow-y-auto custom-scrollbar">
                         {SYMBOLS.filter(sym => sym.toLowerCase().includes(searchQuery.toLowerCase())).map(sym => (
                           <div 
                             key={sym} 
-                            className={`px-3 py-2 rounded-lg cursor-pointer text-sm font-medium ${symbol === sym ? 'bg-indigo-500/20 text-indigo-400' : 'text-slate-300 hover:bg-slate-800'}`}
+                            className={`px-3 py-2.5 rounded-lg cursor-pointer text-base font-medium ${symbol === sym ? 'bg-indigo-500/20 text-indigo-400' : 'text-slate-300 hover:bg-slate-800'}`}
                             onClick={(e) => {
                               e.stopPropagation();
                               setSymbol(sym);
@@ -218,7 +224,11 @@ const Calculator = () => {
                 {liveData && (
                   <button 
                     onClick={() => {
-                      setOpenPrice((direction === 'Buy' ? liveData.ask : liveData.bid).toFixed(liveData.digits || 5));
+                      const digits = liveData.digits || 5;
+                      const openPriceVal = liveData.bid;
+                      const pipOffset = Math.pow(10, -(digits - 1));
+                      setOpenPrice(openPriceVal.toFixed(digits));
+                      setClosePrice((openPriceVal - pipOffset).toFixed(digits));
                     }}
                     className="text-[10px] text-indigo-400 hover:text-indigo-300 transition-colors flex items-center gap-1 bg-indigo-500/10 hover:bg-indigo-500/20 px-1.5 py-0.5 rounded cursor-pointer ml-1 normal-case tracking-normal"
                     title="Update to live prices"
@@ -227,22 +237,22 @@ const Calculator = () => {
                   </button>
                 )}
               </label>
-              <button onClick={() => decrement(setOpenPrice, openPrice, 0.00001, 0, 5)} className="text-slate-400 hover:text-indigo-400 transition-colors p-1 mt-1">
+              <button onClick={() => decrement(setOpenPrice, openPrice, currentStep, 0, currentDigits)} className="text-slate-400 hover:text-indigo-400 transition-colors p-1 mt-1">
                 <Minus className="w-4 h-4" />
               </button>
               <input 
                 type="number" 
-                step="0.00001"
+                step={currentStep}
                 value={openPrice ?? ''}
                 onChange={(e) => setOpenPrice(e.target.value)}
                 onBlur={(e) => {
                   if (e.target.value) {
-                    setOpenPrice(parseFloat(e.target.value).toFixed(5));
+                    setOpenPrice(parseFloat(e.target.value).toFixed(currentDigits));
                   }
                 }}
                 className="w-full text-center bg-transparent outline-none text-slate-100 font-semibold text-lg mt-1"
               />
-              <button onClick={() => increment(setOpenPrice, openPrice, 0.00001, 5)} className="text-slate-400 hover:text-indigo-400 transition-colors p-1 mt-1">
+              <button onClick={() => increment(setOpenPrice, openPrice, currentStep, currentDigits)} className="text-slate-400 hover:text-indigo-400 transition-colors p-1 mt-1">
                 <Plus className="w-4 h-4" />
               </button>
             </div>
@@ -250,16 +260,35 @@ const Calculator = () => {
             {/* Account currency */}
             <div className="relative border border-slate-700/60 bg-[#12192b]/80 rounded-2xl px-4 py-3.5 focus-within:border-indigo-500 focus-within:ring-1 focus-within:ring-indigo-500 transition-all shadow-inner">
               <label className="absolute -top-3 left-4 bg-[#0c1221] px-2 text-[11px] font-bold uppercase tracking-wider text-indigo-300 rounded-md">Account currency</label>
-              <select 
-                value={currency}
-                onChange={(e) => setCurrency(e.target.value)}
-                className="w-full bg-transparent outline-none text-slate-100 font-semibold text-lg cursor-pointer appearance-none mt-1"
+              <div 
+                className="w-full mt-1 relative"
+                onClick={() => setIsCurrencyDropdownOpen(true)}
               >
-                <option value="USD" className="bg-slate-900">USD</option>
-                <option value="EUR" className="bg-slate-900">EUR</option>
-              </select>
-              <div className="pointer-events-none absolute inset-y-0 right-4 flex items-center text-slate-500 mt-1">
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
+                <div className="flex justify-between items-center cursor-pointer">
+                  <span className="text-slate-100 font-semibold text-lg">{currency}</span>
+                  <svg className="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
+                </div>
+                
+                {isCurrencyDropdownOpen && (
+                  <>
+                    <div className="fixed inset-0 z-40" onClick={(e) => { e.stopPropagation(); setIsCurrencyDropdownOpen(false); }}></div>
+                    <div className="absolute top-full left-0 right-0 mt-2 bg-[#12192b] border border-slate-700/60 rounded-xl shadow-[0_10px_40px_rgba(0,0,0,0.8)] z-50 p-2 custom-scrollbar overflow-y-auto max-h-48">
+                      {['USD', 'EUR'].map(curr => (
+                        <div 
+                          key={curr} 
+                          className={`px-3 py-2.5 rounded-lg cursor-pointer text-base font-medium ${currency === curr ? 'bg-indigo-500/20 text-indigo-400' : 'text-slate-300 hover:bg-slate-800'}`}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setCurrency(curr);
+                            setIsCurrencyDropdownOpen(false);
+                          }}
+                        >
+                          {curr}
+                        </div>
+                      ))}
+                    </div>
+                  </>
+                )}
               </div>
             </div>
 
@@ -267,34 +296,23 @@ const Calculator = () => {
             <div className="relative border border-slate-700/60 bg-[#12192b]/80 rounded-2xl px-4 py-3.5 flex items-center justify-between focus-within:border-indigo-500 focus-within:ring-1 focus-within:ring-indigo-500 transition-all shadow-inner">
               <label className="absolute -top-3 left-4 bg-[#0c1221] px-2 text-[11px] font-bold uppercase tracking-wider text-indigo-300 rounded-md flex items-center gap-2">
                 Close price
-                {liveData && (
-                  <button 
-                    onClick={() => {
-                      setClosePrice((direction === 'Buy' ? liveData.bid : liveData.ask).toFixed(liveData.digits || 5));
-                    }}
-                    className="text-[10px] text-indigo-400 hover:text-indigo-300 transition-colors flex items-center gap-1 bg-indigo-500/10 hover:bg-indigo-500/20 px-1.5 py-0.5 rounded cursor-pointer ml-1 normal-case tracking-normal"
-                    title="Update to live prices"
-                  >
-                    <RefreshCw className="w-2.5 h-2.5" />
-                  </button>
-                )}
               </label>
-              <button onClick={() => decrement(setClosePrice, closePrice, 0.00001, 0, 5)} className="text-slate-400 hover:text-indigo-400 transition-colors p-1 mt-1">
+              <button onClick={() => decrement(setClosePrice, closePrice, currentStep, 0, currentDigits)} className="text-slate-400 hover:text-indigo-400 transition-colors p-1 mt-1">
                 <Minus className="w-4 h-4" />
               </button>
               <input 
                 type="number" 
-                step="0.00001"
+                step={currentStep}
                 value={closePrice ?? ''}
                 onChange={(e) => setClosePrice(e.target.value)}
                 onBlur={(e) => {
                   if (e.target.value) {
-                    setClosePrice(parseFloat(e.target.value).toFixed(5));
+                    setClosePrice(parseFloat(e.target.value).toFixed(currentDigits));
                   }
                 }}
                 className="w-full text-center bg-transparent outline-none text-slate-100 font-semibold text-lg mt-1"
               />
-              <button onClick={() => increment(setClosePrice, closePrice, 0.00001, 5)} className="text-slate-400 hover:text-indigo-400 transition-colors p-1 mt-1">
+              <button onClick={() => increment(setClosePrice, closePrice, currentStep, currentDigits)} className="text-slate-400 hover:text-indigo-400 transition-colors p-1 mt-1">
                 <Plus className="w-4 h-4" />
               </button>
             </div>
@@ -368,17 +386,25 @@ const Calculator = () => {
             </h3>
             
             <div className="space-y-8 relative z-10 w-full">
-              <div className="flex justify-between items-end pb-6 border-b border-white/5">
-                <span className="text-slate-400 font-medium">Profit</span>
-                <span className={`text-4xl font-extrabold tracking-tight ${!hasCalculated ? 'text-slate-600' : result.profit < 0 ? 'text-rose-400' : 'text-emerald-400'}`}>
+              <div className="flex justify-between items-center pb-6 border-b border-white/5 gap-4">
+                <span className="text-slate-400 font-medium shrink-0">Profit</span>
+                <span 
+                  className={`font-extrabold tracking-tight break-all text-right ${
+                    !hasCalculated ? 'text-4xl text-slate-600' : 
+                    formatCurrencyValue(result.profit).length > 15 ? 'text-2xl sm:text-3xl' : 'text-4xl'
+                  } ${!hasCalculated ? '' : result.profit < 0 ? 'text-rose-400' : 'text-emerald-400'}`}
+                >
                   {!hasCalculated ? '-' : formatCurrencyValue(result.profit)}
                 </span>
               </div>
 
               <div className="space-y-5">
-                <div className="flex justify-between items-center group">
-                  <span className="text-slate-500 text-sm group-hover:text-slate-400 transition-colors">Gross profit</span>
-                  <span className={`font-bold text-lg ${!hasCalculated ? 'text-slate-600' : result.grossProfit < 0 ? 'text-rose-400' : 'text-slate-200'}`}>
+                <div className="flex justify-between items-center group gap-4">
+                  <span className="text-slate-500 text-sm group-hover:text-slate-400 transition-colors shrink-0">Gross profit</span>
+                  <span className={`font-bold text-right break-all ${
+                    !hasCalculated ? 'text-lg text-slate-600' : 
+                    formatCurrencyValue(result.grossProfit).length > 20 ? 'text-sm' : 'text-lg'
+                  } ${!hasCalculated ? '' : result.grossProfit < 0 ? 'text-rose-400' : 'text-slate-200'}`}>
                     {!hasCalculated ? '-' : formatCurrencyValue(result.grossProfit)}
                   </span>
                 </div>
