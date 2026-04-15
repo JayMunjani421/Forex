@@ -386,12 +386,12 @@ const Calculator = () => {
             </h3>
             
             <div className="space-y-8 relative z-10 w-full">
-              <div className="flex justify-between items-center pb-6 border-b border-white/5 gap-4">
-                <span className="text-slate-400 font-medium shrink-0">Profit</span>
+              <div className="flex flex-col items-end pb-6 border-b border-white/5 gap-2">
+                <span className="text-slate-400 font-medium w-full text-left">Profit</span>
                 <span 
-                  className={`font-extrabold tracking-tight break-all text-right ${
-                    !hasCalculated ? 'text-4xl text-slate-600' : 
-                    formatCurrencyValue(result.profit).length > 15 ? 'text-2xl sm:text-3xl' : 'text-4xl'
+                  className={`font-extrabold tracking-tight break-all text-right w-full ${
+                    !hasCalculated ? 'text-3xl text-slate-600' : 
+                    formatCurrencyValue(result.profit).length > 15 ? 'text-xl sm:text-2xl' : 'text-3xl'
                   } ${!hasCalculated ? '' : result.profit < 0 ? 'text-rose-400' : 'text-emerald-400'}`}
                 >
                   {!hasCalculated ? '-' : formatCurrencyValue(result.profit)}
@@ -399,18 +399,18 @@ const Calculator = () => {
               </div>
 
               <div className="space-y-5">
-                <div className="flex justify-between items-center group gap-4">
-                  <span className="text-slate-500 text-sm group-hover:text-slate-400 transition-colors shrink-0">Gross profit</span>
-                  <span className={`font-bold text-right break-all ${
+                <div className="flex flex-col items-end group gap-1">
+                  <span className="text-slate-500 text-sm group-hover:text-slate-400 transition-colors w-full text-left">Gross profit</span>
+                  <span className={`font-bold text-right w-full break-all ${
                     !hasCalculated ? 'text-lg text-slate-600' : 
                     formatCurrencyValue(result.grossProfit).length > 20 ? 'text-sm' : 'text-lg'
                   } ${!hasCalculated ? '' : result.grossProfit < 0 ? 'text-rose-400' : 'text-slate-200'}`}>
                     {!hasCalculated ? '-' : formatCurrencyValue(result.grossProfit)}
                   </span>
                 </div>
-                <div className="flex justify-between items-center group">
-                  <span className="text-slate-500 text-sm group-hover:text-slate-400 transition-colors">Trading fees</span>
-                  <span className={`font-bold text-lg ${!hasCalculated ? 'text-slate-600' : 'text-slate-400'}`}>
+                <div className="flex flex-col items-end group gap-1">
+                  <span className="text-slate-500 text-sm group-hover:text-slate-400 transition-colors w-full text-left">Trading fees</span>
+                  <span className={`font-bold text-lg text-right w-full break-all ${!hasCalculated ? 'text-slate-600' : 'text-slate-400'}`}>
                     {!hasCalculated ? '-' : `-${result.currency === 'EUR' ? '€' : '$'}${result.fees.toFixed(2)}`}
                   </span>
                 </div>
