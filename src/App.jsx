@@ -7,14 +7,6 @@ import ForexInfo from './components/ForexInfo';
 
 function App() {
   const [activeTab, setActiveTab] = useState('profit');
-  const [isNavDropdownOpen, setIsNavDropdownOpen] = useState(false);
-
-  const tabs = [
-    { id: 'margin', label: 'Margin Calculator' },
-    { id: 'profit', label: 'Profit/Loss Calculator' },
-    { id: 'lotsize', label: 'Lot Size Calculator' },
-    { id: 'swap', label: 'Swap Calculator' }
-  ];
 
   return (
     <main className="min-h-screen bg-[#070b14] bg-[radial-gradient(ellipse_at_top,var(--tw-gradient-stops))] from-indigo-900/20 via-[#070b14] to-[#070b14] flex flex-col items-center p-4 py-8 lg:py-18">
@@ -36,68 +28,32 @@ function App() {
         </div>
 
         {/* Navigation Tabs */}
-        <div className="flex justify-center px-4 relative z-50 mb-2 mt-6 w-full">
-          
-          {/* Desktop Tabs */}
-          <div className="hidden md:flex bg-[#0d1323]/50 p-2 border border-white/5 rounded-full backdrop-blur-md shadow-lg shadow-black/20 gap-2 flex-wrap justify-center">
+        <div className="flex justify-center w-full px-4 relative z-50 mb-2 mt-6">
+          <div className="flex bg-[#0d1323]/50 p-2 border border-white/5 rounded-full backdrop-blur-md shadow-lg shadow-black/20 gap-2 overflow-x-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] w-full max-w-[calc(100vw-2rem)] md:w-auto md:flex-wrap md:justify-center">
             <button 
               onClick={() => setActiveTab('margin')}
-              className={`px-5 py-2.5 rounded-full text-sm font-semibold transition-all duration-300 ${activeTab === 'margin' ? 'bg-[#1e293b] border border-slate-600/50 shadow-md text-white' : 'bg-transparent text-slate-400 hover:text-slate-200 hover:bg-white/5'}`}
+              className={`px-5 py-2.5 rounded-full text-sm font-semibold transition-all duration-300 whitespace-nowrap shrink-0 ${activeTab === 'margin' ? 'bg-[#1e293b] border border-slate-600/50 shadow-md text-white' : 'bg-transparent text-slate-400 hover:text-slate-200 hover:bg-white/5'}`}
             >
               Margin Calculator
             </button>
             <button 
               onClick={() => setActiveTab('profit')}
-              className={`px-5 py-2.5 rounded-full text-sm font-semibold transition-all duration-300 ${activeTab === 'profit' ? 'bg-[#1e293b] border border-slate-600/50 shadow-md text-white' : 'bg-transparent text-slate-400 hover:text-slate-200 hover:bg-white/5'}`}
+              className={`px-5 py-2.5 rounded-full text-sm font-semibold transition-all duration-300 whitespace-nowrap shrink-0 ${activeTab === 'profit' ? 'bg-[#1e293b] border border-slate-600/50 shadow-md text-white' : 'bg-transparent text-slate-400 hover:text-slate-200 hover:bg-white/5'}`}
             >
               Profit/Loss Calculator
             </button>
             <button 
               onClick={() => setActiveTab('lotsize')}
-              className={`px-5 py-2.5 rounded-full text-sm font-semibold transition-all duration-300 ${activeTab === 'lotsize' ? 'bg-[#1e293b] border border-slate-600/50 shadow-md text-white' : 'bg-transparent text-slate-400 hover:text-slate-200 hover:bg-white/5'}`}
+              className={`px-5 py-2.5 rounded-full text-sm font-semibold transition-all duration-300 whitespace-nowrap shrink-0 ${activeTab === 'lotsize' ? 'bg-[#1e293b] border border-slate-600/50 shadow-md text-white' : 'bg-transparent text-slate-400 hover:text-slate-200 hover:bg-white/5'}`}
             >
               Lot Size Calculator
             </button>
             <button 
               onClick={() => setActiveTab('swap')}
-              className={`px-5 py-2.5 rounded-full text-sm font-semibold transition-all duration-300 ${activeTab === 'swap' ? 'bg-[#1e293b] border border-slate-600/50 shadow-md text-white' : 'bg-transparent text-slate-400 hover:text-slate-200 hover:bg-white/5'}`}
+              className={`px-5 py-2.5 rounded-full text-sm font-semibold transition-all duration-300 whitespace-nowrap shrink-0 ${activeTab === 'swap' ? 'bg-[#1e293b] border border-slate-600/50 shadow-md text-white' : 'bg-transparent text-slate-400 hover:text-slate-200 hover:bg-white/5'}`}
             >
               Swap Calculator
             </button>
-          </div>
-
-          {/* Mobile Custom Dropdown */}
-          <div className="md:hidden w-full max-w-sm relative mx-auto">
-            <div 
-              className={`w-full bg-[#12192b]/95 text-slate-200 border ${isNavDropdownOpen ? 'border-indigo-500 ring-1 ring-indigo-500' : 'border-slate-700/60'} rounded-2xl px-4 py-3.5 flex items-center justify-between shadow-xl cursor-pointer transition-all`}
-              onClick={() => setIsNavDropdownOpen(!isNavDropdownOpen)}
-            >
-              <div className="flex items-center gap-3">
-                <svg className="w-5 h-5 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h7"></path></svg>
-                <span className="font-bold text-base">{tabs.find(t => t.id === activeTab)?.label}</span>
-              </div>
-              <svg className={`w-5 h-5 text-slate-400 transition-transform ${isNavDropdownOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
-            </div>
-            
-            {isNavDropdownOpen && (
-              <>
-                <div className="fixed inset-0 z-40" onClick={() => setIsNavDropdownOpen(false)}></div>
-                <div className="absolute top-full left-0 right-0 mt-2 bg-[#12192b] border border-slate-700/60 rounded-xl shadow-[0_10px_40px_rgba(0,0,0,0.8)] z-50 overflow-hidden">
-                  {tabs.map(tab => (
-                    <div 
-                      key={tab.id}
-                      className={`px-5 py-3.5 cursor-pointer text-base font-medium transition-colors ${activeTab === tab.id ? 'bg-indigo-500/20 text-indigo-400' : 'text-slate-300 hover:bg-slate-800'}`}
-                      onClick={() => {
-                        setActiveTab(tab.id);
-                        setIsNavDropdownOpen(false);
-                      }}
-                    >
-                      {tab.label}
-                    </div>
-                  ))}
-                </div>
-              </>
-            )}
           </div>
         </div>
 
@@ -106,7 +62,7 @@ function App() {
           {activeTab === 'profit' && <Calculator />}
           {activeTab === 'lotsize' && <LotSizeCalculator />}
           {activeTab !== 'profit' && activeTab !== 'lotsize' && (
-            <div className="w-full max-w-5xl mx-auto bg-[#0d1323]/80 backdrop-blur-2xl rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.5)] p-12 border border-white/5 flex flex-col items-center justify-center min-h-[400px]">
+            <div className="w-full max-w-5xl mx-auto bg-[#0d1323]/80 backdrop-blur-2xl rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.5)] p-12 border border-white/5 flex flex-col items-center justify-center min-h-100">
                <div className="w-16 h-16 mb-4 rounded-full bg-slate-800/50 flex items-center justify-center border border-slate-700">
                  <svg className="w-8 h-8 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
                </div>
@@ -129,17 +85,6 @@ function App() {
         {/* Live News */}
         <div className="px-2 md:px-0 relative z-10 w-full">
           <News />
-        </div>
-
-        {/* Related Tools section */}
-        <div className="flex justify-center pt-8 relative z-10">
-          <button className="group relative px-8 py-3.5 rounded-full bg-slate-900/80 border border-slate-700/50 hover:border-indigo-500/50 text-slate-300 hover:text-white font-medium transition-all duration-300 shadow-xl hover:shadow-indigo-500/20 hover:-translate-y-0.5 overflow-hidden">
-            <span className="relative z-10 flex items-center gap-2">
-              Related Tools
-              <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
-            </span>
-            <div className="absolute inset-0 bg-linear-to-r from-indigo-600/20 to-purple-600/20 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-          </button>
         </div>
       </div>
     </main>

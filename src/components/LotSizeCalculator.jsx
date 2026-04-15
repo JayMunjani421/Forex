@@ -100,7 +100,7 @@ const LotSizeCalculator = () => {
                 Symbol
                 <span className="group relative flex items-center">
                   <Info size={12} className="text-slate-400 group-hover:text-indigo-300 transition-colors" />
-                  <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-max max-w-[200px] p-2 bg-slate-800 text-[10px] text-slate-200 rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-[100] text-center shadow-xl border border-slate-700 whitespace-normal normal-case font-normal pointer-events-none">
+                  <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-max max-w-50 p-2 bg-slate-800 text-[10px] text-slate-200 rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-100 text-center shadow-xl border border-slate-700 whitespace-normal normal-case font-normal pointer-events-none">
                     Pick the asset you plan to trade.
                   </div>
                 </span>
@@ -160,7 +160,7 @@ const LotSizeCalculator = () => {
                 Account Balance
                 <span className="group relative flex items-center">
                   <Info size={12} className="text-slate-400 group-hover:text-indigo-300 transition-colors" />
-                  <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-max max-w-[200px] p-2 bg-slate-800 text-[10px] text-slate-200 rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-[100] text-center shadow-xl border border-slate-700 whitespace-normal normal-case font-normal pointer-events-none">
+                  <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-max max-w-50 p-2 bg-slate-800 text-[10px] text-slate-200 rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-100 text-center shadow-xl border border-slate-700 whitespace-normal normal-case font-normal pointer-events-none">
                     Enter the total funds currently available in your trading account.
                   </div>
                 </span>
@@ -180,7 +180,7 @@ const LotSizeCalculator = () => {
                 Risk Percentage
                 <span className="group relative flex items-center">
                   <Info size={12} className="text-slate-400 group-hover:text-indigo-300 transition-colors" />
-                  <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-max max-w-[200px] p-2 bg-slate-800 text-[10px] text-slate-200 rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-[100] text-center shadow-xl border border-slate-700 whitespace-normal normal-case font-normal pointer-events-none">
+                  <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-max max-w-50 p-2 bg-slate-800 text-[10px] text-slate-200 rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-100 text-center shadow-xl border border-slate-700 whitespace-normal normal-case font-normal pointer-events-none">
                     Specify what portion of your balance you're willing to risk on this trade.
                   </div>
                 </span>
@@ -205,7 +205,7 @@ const LotSizeCalculator = () => {
                 Entry Price
                 <span className="group relative flex items-center">
                   <Info size={12} className="text-slate-400 group-hover:text-indigo-300 transition-colors" />
-                  <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-max max-w-[200px] p-2 bg-slate-800 text-[10px] text-slate-200 rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-[100] text-center shadow-xl border border-slate-700 whitespace-normal normal-case font-normal pointer-events-none">
+                  <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-max max-w-50 p-2 bg-slate-800 text-[10px] text-slate-200 rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-100 text-center shadow-xl border border-slate-700 whitespace-normal normal-case font-normal pointer-events-none">
                     Enter the price where you intend to open the trade.
                   </div>
                 </span>
@@ -225,7 +225,7 @@ const LotSizeCalculator = () => {
                 Exit Price
                 <span className="group relative flex items-center">
                   <Info size={12} className="text-slate-400 group-hover:text-indigo-300 transition-colors" />
-                  <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-max max-w-[200px] p-2 bg-slate-800 text-[10px] text-slate-200 rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-[100] text-center shadow-xl border border-slate-700 whitespace-normal normal-case font-normal pointer-events-none">
+                  <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-max max-w-50 p-2 bg-slate-800 text-[10px] text-slate-200 rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-100 text-center shadow-xl border border-slate-700 whitespace-normal normal-case font-normal pointer-events-none">
                     Enter the price where you intend to close the trade.
                   </div>
                 </span>
