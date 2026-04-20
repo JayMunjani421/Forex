@@ -5,14 +5,12 @@ const SYMBOLS = [
   "EURUSD", "GBPUSD", "USDJPY", "USDCHF", "AUDUSD", "NZDUSD", "USDCAD", "EURGBP", "EURJPY", "GBPJPY", "EURCHF", "EURAUD", "EURNZD", "EURCAD", "GBPCHF", "GBPAUD", "GBPNZD", "GBPCAD", "CHFJPY", "AUDJPY", "AUDCHF", "AUDNZD", "AUDCAD", "NZDJPY", "NZDCHF", "NZDCAD", "CADJPY", "CADCHF", "XAGUSD", "XAUUSD", "UK100", "GER40", "NAS100", "USDMXN", "USDZAR"
 ];
 
-const Calculator = () => {
-  const [symbol, setSymbol] = useState('EURUSD');
-  const [currency, setCurrency] = useState('USD');
-  const [volume, setVolume] = useState('1');
+const MarginCalculator = () => {
+  const [symbol, setSymbol] = useState('');
+  const [currency, setCurrency] = useState('');
+  const [volume, setVolume] = useState('');
+  const [leverage, setLeverage] = useState('');
   const [openPrice, setOpenPrice] = useState('');
-  const [closePrice, setClosePrice] = useState('');
-  const [direction, setDirection] = useState('Sell');
-  
   const [liveData, setLiveData] = useState(null);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
@@ -20,11 +18,8 @@ const Calculator = () => {
   const [hasInitializedLivePrice, setHasInitializedLivePrice] = useState(false);
   const [hasCalculated, setHasCalculated] = useState(false);
   const [isCurrencyDropdownOpen, setIsCurrencyDropdownOpen] = useState(false);
-  const [isDirectionOpen, setIsDirectionOpen] = useState(false);
 
   useEffect(() => {
-    if (!symbol) return;
-    
     setHasInitializedLivePrice(false);
     setLiveData(null);
     let intervalId;
@@ -45,6 +40,7 @@ const Calculator = () => {
     };
 
     fetchLivePrice();
+    // Poll every 3 seconds for real-time updates
     intervalId = setInterval(fetchLivePrice, 3000); 
 
     return () => clearInterval(intervalId);
@@ -54,26 +50,20 @@ const Calculator = () => {
     if (liveData && !hasInitializedLivePrice) {
       const digits = liveData.digits || 5;
       const openPriceVal = liveData.bid;
-      const pipOffset = Math.pow(10, -(digits - 1));
       setOpenPrice(openPriceVal.toFixed(digits));
-      setClosePrice((openPriceVal - pipOffset).toFixed(digits));
       setHasInitializedLivePrice(true);
     }
-  }, [liveData, hasInitializedLivePrice, direction]);
+  }, [liveData, hasInitializedLivePrice]);
 
   const currentDigits = liveData?.digits || 5;
   const currentStep = Number(Math.pow(10, -currentDigits).toFixed(currentDigits));
 
   const [result, setResult] = useState({
-    profit: 0.0,
-    grossProfit: 0.0,
-    fees: 0.0,
+    margin: 0.0,
     currency: 'USD'
   });
 
   const handleCalculate = () => {
-    if (!symbol || !currency || !direction || volume === '' || openPrice === '' || closePrice === '') return;
-    
     const CONTRACT_SIZES = {
       XAUUSD: 100,
       XAGUSD: 5000,
@@ -84,65 +74,67 @@ const Calculator = () => {
     };
     const contractSize = CONTRACT_SIZES[symbol] || 100000;
     
-    const parsedOpen = parseFloat(openPrice) || 0;
-    const parsedClose = parseFloat(closePrice) || 0;
+    // Leverage should be valid
+    const lev = parseFloat(leverage);
+    if (!lev || lev <= 0) return;
+
+    let notionalUSD = 0;
     const vol = parseFloat(volume) || 0;
 
-    let baseProfit = 0;
-    if (direction === 'Buy') {
-      baseProfit = (parsedClose - parsedOpen) * contractSize * vol;
+    const isMetalOrIndex = ['XAUUSD', 'XAGUSD', 'UK100', 'FRA40', 'GER40', 'NAS100'].includes(symbol);
+    
+    if (isMetalOrIndex) {
+      const price = parseFloat(openPrice) || 0;
+      let quoteCurrency = 'USD';
+      if (symbol === 'UK100') quoteCurrency = 'GBP';
+      if (symbol === 'FRA40' || symbol === 'GER40') quoteCurrency = 'EUR';
+      
+      let notionalQuote = vol * contractSize * price;
+      
+      if (quoteCurrency === 'USD') notionalUSD = notionalQuote;
+      else if (quoteCurrency === 'EUR' && rates['EURUSD']) notionalUSD = notionalQuote * rates['EURUSD'].bid;
+      else if (quoteCurrency === 'GBP' && rates['GBPUSD']) notionalUSD = notionalQuote * rates['GBPUSD'].bid;
+      else notionalUSD = notionalQuote; // Fallback
     } else {
-      baseProfit = (parsedOpen - parsedClose) * contractSize * vol;
+      // Forex
+      const baseCurrency = symbol.substring(0, 3);
+      const notionalBase = vol * contractSize;
+      
+      if (baseCurrency === 'USD') notionalUSD = notionalBase;
+      else if (baseCurrency === 'EUR' && rates['EURUSD']) notionalUSD = notionalBase * rates['EURUSD'].bid;
+      else if (baseCurrency === 'GBP' && rates['GBPUSD']) notionalUSD = notionalBase * rates['GBPUSD'].bid;
+      else if (baseCurrency === 'AUD' && rates['AUDUSD']) notionalUSD = notionalBase * rates['AUDUSD'].bid;
+      else if (baseCurrency === 'NZD' && rates['NZDUSD']) notionalUSD = notionalBase * rates['NZDUSD'].bid;
+      else if (baseCurrency === 'JPY' && rates['USDJPY']) notionalUSD = notionalBase / rates['USDJPY'].bid;
+      else if (baseCurrency === 'CHF' && rates['USDCHF']) notionalUSD = notionalBase / rates['USDCHF'].bid;
+      else if (baseCurrency === 'CAD' && rates['USDCAD']) notionalUSD = notionalBase / rates['USDCAD'].bid;
+      else if (baseCurrency === 'MXN' && rates['USDMXN']) notionalUSD = notionalBase / rates['USDMXN'].bid;
+      else if (baseCurrency === 'ZAR' && rates['USDZAR']) notionalUSD = notionalBase / rates['USDZAR'].bid;
+      else notionalUSD = notionalBase; // Fallback
     }
 
-    // Convert Quote Currency to USD
-    let profitInUSD = baseProfit;
-    const getQuoteCurrency = (sym) => {
-      if (sym === 'UK100') return 'GBP';
-      if (sym === 'FRA40' || sym === 'GER40') return 'EUR';
-      if (sym === 'NAS100') return 'USD';
-      if (sym.length === 6) return sym.substring(3, 6);
-      return 'USD';
-    };
-    
-    const quoteCur = getQuoteCurrency(symbol);
-    
-    if (quoteCur !== 'USD') {
-      if (quoteCur === 'EUR' && rates['EURUSD']) profitInUSD = baseProfit * rates['EURUSD'].bid;
-      else if (quoteCur === 'GBP' && rates['GBPUSD']) profitInUSD = baseProfit * rates['GBPUSD'].bid;
-      else if (quoteCur === 'AUD' && rates['AUDUSD']) profitInUSD = baseProfit * rates['AUDUSD'].bid;
-      else if (quoteCur === 'NZD' && rates['NZDUSD']) profitInUSD = baseProfit * rates['NZDUSD'].bid;
-      else if (quoteCur === 'JPY' && rates['USDJPY']) profitInUSD = baseProfit / rates['USDJPY'].bid;
-      else if (quoteCur === 'CHF' && rates['USDCHF']) profitInUSD = baseProfit / rates['USDCHF'].bid;
-      else if (quoteCur === 'CAD' && rates['USDCAD']) profitInUSD = baseProfit / rates['USDCAD'].bid;
-      else if (quoteCur === 'MXN' && rates['USDMXN']) profitInUSD = baseProfit / rates['USDMXN'].bid;
-      else if (quoteCur === 'ZAR' && rates['USDZAR']) profitInUSD = baseProfit / rates['USDZAR'].bid;
-    }
+    let marginRequired = notionalUSD / lev;
 
     // Convert to Account Currency
-    let finalProfit = profitInUSD;
+    let finalMargin = marginRequired;
     if (currency === 'EUR' && rates['EURUSD']) {
-      finalProfit = profitInUSD / rates['EURUSD'].bid;
+      finalMargin = marginRequired / rates['EURUSD'].bid;
     }
 
     setResult({
-      profit: parseFloat(finalProfit.toFixed(2)),
-      grossProfit: parseFloat(finalProfit.toFixed(2)),
-      fees: 0.0,
+      margin: parseFloat(finalMargin.toFixed(2)),
       currency: currency
     });
     setHasCalculated(true);
   };
 
   const increment = (setter, value, step, formatDecimals) => {
-    const val = value === '' ? 0 : parseFloat(value);
-    const nextVal = val + step;
+    const nextVal = parseFloat(value) + step;
     setter(formatDecimals !== undefined ? nextVal.toFixed(formatDecimals) : parseFloat(nextVal.toFixed(4)));
   };
 
   const decrement = (setter, value, step, min = 0, formatDecimals) => {
-    const val = value === '' ? 0 : parseFloat(value);
-    const nextVal = val - step;
+    const nextVal = parseFloat(value) - step;
     if (nextVal >= min) {
       setter(formatDecimals !== undefined ? nextVal.toFixed(formatDecimals) : parseFloat(nextVal.toFixed(4)));
     }
@@ -150,7 +142,7 @@ const Calculator = () => {
 
   const formatCurrencyValue = (val) => {
     const sym = result.currency === 'EUR' ? '€' : '$';
-    return `${val < 0 ? '-' : ''}${sym}${Math.abs(val).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    return `${sym}${Math.abs(val).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
   };
 
   return (
@@ -160,7 +152,6 @@ const Calculator = () => {
         <div className="absolute -top-40 -right-40 w-96 h-96 bg-indigo-500/20 rounded-full blur-[100px]"></div>
         <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-purple-500/10 rounded-full blur-[100px]"></div>
       </div>
-
       <div className="flex flex-col lg:flex-row gap-12 lg:gap-20 relative z-10">
         {/* Left Side: Form */}
         <div className="flex-1 flex flex-col">
@@ -216,46 +207,10 @@ const Calculator = () => {
                             {sym}
                           </div>
                         ))}
+                        {SYMBOLS.filter(sym => sym.toLowerCase().includes(searchQuery.toLowerCase())).length === 0 && (
+                          <div className="px-3 py-2 text-slate-500 text-sm text-center">No symbols found</div>
+                        )}
                       </div>
-                    </div>
-                  </>
-                )}
-              </div>
-            </div>
-
-            {/* Trade Type Dropdown */}
-            <div className="relative border border-slate-700/60 bg-[#12192b]/80 rounded-2xl px-4 py-3.5 focus-within:border-indigo-500 focus-within:ring-1 focus-within:ring-indigo-500 transition-all shadow-inner">
-              <label className="absolute -top-3 left-4 bg-[#0c1221] px-2 text-[11px] sm:text-xs font-bold uppercase tracking-wider text-indigo-300 rounded-md">
-                Trade Type
-              </label>
-              <div 
-                className="w-full relative py-0.5"
-                onClick={() => setIsDirectionOpen(true)}
-              >
-                <div className="flex justify-between items-center cursor-pointer">
-                  <span className={`font-semibold text-[15px] ${!direction ? 'text-slate-400' : 'text-slate-100'} truncate w-full`}>
-                    {direction || 'Select Trade Type'}
-                  </span>
-                  <svg className="w-4 h-4 text-slate-500 flex-shrink-0 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
-                </div>
-                
-                {isDirectionOpen && (
-                  <>
-                    <div className="fixed inset-0 z-40" onClick={(e) => { e.stopPropagation(); setIsDirectionOpen(false); }}></div>
-                    <div className="absolute top-full left-0 right-0 mt-2 bg-[#12192b] border border-slate-700/60 rounded-xl shadow-[0_10px_40px_rgba(0,0,0,0.8)] z-50 p-2 overflow-y-auto max-h-48">
-                      {['Buy', 'Sell'].map(dir => (
-                        <div 
-                          key={dir} 
-                          className={`px-3 py-2.5 rounded-lg cursor-pointer text-[15px] font-medium ${direction === dir ? 'bg-indigo-500/20 text-indigo-400' : 'text-slate-300 hover:bg-slate-800'}`}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setDirection(dir);
-                            setIsDirectionOpen(false);
-                          }}
-                        >
-                          {dir}
-                        </div>
-                      ))}
                     </div>
                   </>
                 )}
@@ -297,41 +252,16 @@ const Calculator = () => {
               </div>
             </div>
 
-            {/* Volume */}
-            <div className="relative border border-slate-700/60 bg-[#12192b]/80 rounded-2xl px-4 py-3.5 flex items-center justify-between focus-within:border-indigo-500 focus-within:ring-1 focus-within:ring-indigo-500 transition-all shadow-inner">
-              <label className="absolute -top-3 left-4 bg-[#0c1221] px-2 text-[11px] sm:text-xs font-bold uppercase tracking-wider text-indigo-300 rounded-md">Volume, lots</label>
-              <button 
-                onClick={() => decrement(setVolume, volume, 0.01, 0.01)} 
-                className="text-slate-400 hover:text-indigo-400 transition-colors p-1 mt-0.5">
-                <Minus className="w-4 h-4" />
-              </button>
-              <input 
-                type="number" 
-                value={volume}
-                step="0.01"
-                placeholder="Enter Size"
-                onChange={(e) => setVolume(parseFloat(e.target.value) || '')}
-                className="w-full text-center bg-transparent outline-none text-slate-100 font-semibold text-[15px] py-0.5 placeholder:text-slate-500"
-              />
-              <button 
-                onClick={() => increment(setVolume, volume, 0.01)} 
-                className="text-slate-400 hover:text-indigo-400 transition-colors p-1 mt-0.5">
-                <Plus className="w-4 h-4" />
-              </button>
-            </div>
-
-            {/* Open Price */}
+            {/* Price */}
             <div className="relative border border-slate-700/60 bg-[#12192b]/80 rounded-2xl px-4 py-3.5 flex items-center justify-between focus-within:border-indigo-500 focus-within:ring-1 focus-within:ring-indigo-500 transition-all shadow-inner">
               <label className="absolute -top-3 left-4 bg-[#0c1221] px-2 text-[11px] sm:text-xs font-bold uppercase tracking-wider text-indigo-300 rounded-md flex items-center gap-2">
-                Open price
+                Price
                 {liveData && (
                   <button 
                     onClick={() => {
                       const digits = liveData.digits || 5;
                       const openPriceVal = liveData.bid;
-                      const pipOffset = Math.pow(10, -(digits - 1));
                       setOpenPrice(openPriceVal.toFixed(digits));
-                      setClosePrice((openPriceVal - pipOffset).toFixed(digits));
                     }}
                     className="text-[10px] text-indigo-400 hover:text-indigo-300 transition-colors flex items-center gap-1 bg-indigo-500/10 hover:bg-indigo-500/20 px-1.5 py-0.5 rounded cursor-pointer ml-1 normal-case tracking-normal"
                     title="Update to live prices"
@@ -354,39 +284,55 @@ const Calculator = () => {
                     setOpenPrice(parseFloat(e.target.value).toFixed(currentDigits));
                   }
                 }}
-                className="w-full text-center bg-transparent outline-none text-slate-100 font-semibold text-[15px] py-0.5 placeholder:text-slate-500"
+                className="w-full text-center bg-transparent outline-none text-slate-100 font-semibold text-[15px] py-0.5"
               />
               <button onClick={() => increment(setOpenPrice, openPrice, currentStep, currentDigits)} className="text-slate-400 hover:text-indigo-400 transition-colors p-1 mt-0.5">
                 <Plus className="w-4 h-4" />
               </button>
             </div>
 
-            {/* Close Price */}
+            {/* Leverage */}
             <div className="relative border border-slate-700/60 bg-[#12192b]/80 rounded-2xl px-4 py-3.5 flex items-center justify-between focus-within:border-indigo-500 focus-within:ring-1 focus-within:ring-indigo-500 transition-all shadow-inner">
-              <label className="absolute -top-3 left-4 bg-[#0c1221] px-2 text-[11px] sm:text-xs font-bold uppercase tracking-wider text-indigo-300 rounded-md flex items-center gap-2">
-                Close price
-              </label>
-              <button onClick={() => decrement(setClosePrice, closePrice, currentStep, 0, currentDigits)} className="text-slate-400 hover:text-indigo-400 transition-colors p-1 mt-0.5">
+              <label className="absolute -top-3 left-4 bg-[#0c1221] px-2 text-[11px] sm:text-xs font-bold uppercase tracking-wider text-indigo-300 rounded-md">Leverage (1:X)</label>
+              <button onClick={() => decrement(setLeverage, leverage, 10, 1)} className="text-slate-400 hover:text-indigo-400 transition-colors p-1 mt-0.5">
                 <Minus className="w-4 h-4" />
               </button>
               <input 
                 type="number" 
-                step={currentStep}
-                placeholder="Enter Price"
-                value={closePrice ?? ''}
-                onChange={(e) => setClosePrice(e.target.value)}
-                onBlur={(e) => {
-                  if (e.target.value) {
-                    setClosePrice(parseFloat(e.target.value).toFixed(currentDigits));
-                  }
-                }}
+                placeholder="Leverage"
+                value={leverage}
+                onChange={(e) => setLeverage(parseFloat(e.target.value) || '')}
                 className="w-full text-center bg-transparent outline-none text-slate-100 font-semibold text-[15px] py-0.5 placeholder:text-slate-500"
               />
-              <button onClick={() => increment(setClosePrice, closePrice, currentStep, currentDigits)} className="text-slate-400 hover:text-indigo-400 transition-colors p-1 mt-0.5">
+              <button onClick={() => increment(setLeverage, leverage, 10)} className="text-slate-400 hover:text-indigo-400 transition-colors p-1 mt-0.5">
                 <Plus className="w-4 h-4" />
               </button>
             </div>
+
+            {/* Volume */}
+            <div className="relative border border-slate-700/60 bg-[#12192b]/80 rounded-2xl px-4 py-3.5 flex items-center justify-between focus-within:border-indigo-500 focus-within:ring-1 focus-within:ring-indigo-500 transition-all shadow-inner">
+              <label className="absolute -top-3 left-4 bg-[#0c1221] px-2 text-[11px] sm:text-xs font-bold uppercase tracking-wider text-indigo-300 rounded-md">Volume, lots</label>
+              <button onClick={() => decrement(setVolume, volume, 0.01, 0.01)} className="text-slate-400 hover:text-indigo-400 transition-colors p-1 mt-0.5">
+                <Minus className="w-4 h-4" />
+              </button>
+              <input 
+                type="number" 
+                value={volume}
+                step="0.01"
+                placeholder="Enter Size"
+                onChange={(e) => setVolume(parseFloat(e.target.value) || '')}
+                className="w-full text-center bg-transparent outline-none text-slate-100 font-semibold text-[15px] py-0.5 placeholder:text-slate-500"
+              />
+              <button onClick={() => increment(setVolume, volume, 0.01)} className="text-slate-400 hover:text-indigo-400 transition-colors p-1 mt-0.5">
+                <Plus className="w-4 h-4" />
+              </button>
+            </div>
+            
+            {/* Empty grid block to balance */}
+            <div className="hidden md:block"></div>
+
           </div>
+
         </div>
 
         {/* Right Side: Results */}
@@ -401,18 +347,16 @@ const Calculator = () => {
             
             <div className="space-y-8 relative z-10 w-full">
               <div className="flex flex-col items-end pb-6 border-b border-white/5 gap-2">
-                <span className="text-slate-400 font-medium w-full text-left text-sm">Profit</span>
+                <span className="text-slate-400 font-medium w-full text-left text-sm">Required Margin</span>
                 <span 
                   className={`font-extrabold tracking-tight break-all text-right w-full ${
                     !hasCalculated ? 'text-3xl text-slate-600' : 
-                    formatCurrencyValue(result.profit).length > 15 ? 'text-xl sm:text-2xl' : 'text-3xl'
-                  } ${!hasCalculated ? '' : result.profit < 0 ? 'text-rose-400' : 'text-emerald-400'}`}
+                    formatCurrencyValue(result.margin).length > 15 ? 'text-xl sm:text-2xl' : 'text-3xl'
+                  } ${!hasCalculated ? '' : 'text-emerald-400'}`}
                 >
-                  {!hasCalculated ? '-' : formatCurrencyValue(result.profit)}
+                  {!hasCalculated ? '-' : formatCurrencyValue(result.margin)}
                 </span>
               </div>
-
-
             </div>
           </div>
         </div>
@@ -421,7 +365,7 @@ const Calculator = () => {
       <div className="mt-12 flex justify-end relative z-10">
         <button 
           onClick={handleCalculate}
-          disabled={!symbol || !currency || !direction || volume === '' || openPrice === '' || closePrice === ''}
+          disabled={!symbol || !currency || !openPrice || !leverage || volume === ''}
           className="w-full md:w-auto bg-linear-to-r from-indigo-500 to-purple-600 hover:from-indigo-400 hover:to-purple-500 disabled:opacity-50 disabled:cursor-not-allowed text-white px-10 py-4 rounded-xl font-bold transition-all shadow-lg hover:shadow-indigo-500/25 active:scale-[0.98] focus:ring-4 focus:ring-indigo-500/20 text-lg flex items-center justify-center gap-2 group"
         >
           Calculate
@@ -433,4 +377,4 @@ const Calculator = () => {
   );
 };
 
-export default Calculator;
+export default MarginCalculator;

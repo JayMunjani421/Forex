@@ -6,7 +6,7 @@ const SYMBOLS = [
 ];
 
 const LotSizeCalculator = () => {
-  const [symbol, setSymbol] = useState('EURUSD');
+  const [symbol, setSymbol] = useState('');
   const [balance, setBalance] = useState('');
   const [risk, setRisk] = useState('');
   const [entryPrice, setEntryPrice] = useState('');
@@ -96,7 +96,7 @@ const LotSizeCalculator = () => {
             
             {/* Symbol */}
             <div className="relative border border-slate-700/60 bg-[#12192b]/80 rounded-2xl px-4 py-3.5 focus-within:border-indigo-500 focus-within:ring-1 focus-within:ring-indigo-500 transition-all shadow-inner">
-              <label className="absolute -top-3 left-4 flex items-center gap-2 bg-[#0c1221] px-2 text-[11px] font-bold uppercase tracking-wider text-indigo-300 rounded-md">
+              <label className="absolute -top-3 left-4 flex items-center gap-2 bg-[#0c1221] px-2 text-[11px] sm:text-xs font-bold uppercase tracking-wider text-indigo-300 rounded-md">
                 Symbol
                 <span className="group relative flex items-center">
                   <Info size={12} className="text-slate-400 group-hover:text-indigo-300 transition-colors" />
@@ -106,12 +106,12 @@ const LotSizeCalculator = () => {
                 </span>
               </label>
               <div 
-                className="w-full mt-1 relative"
+                className="w-full relative py-0.5"
                 onClick={() => setIsDropdownOpen(true)}
               >
                 <div className="flex justify-between items-center cursor-pointer">
-                  <span className="text-slate-100 font-semibold text-lg">{symbol}</span>
-                  <svg className="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
+                  <span className={`font-semibold text-[15px] ${!symbol ? 'text-slate-400' : 'text-slate-100'} truncate w-full`}>{symbol || 'Select Instrument'}</span>
+                  <svg className="w-4 h-4 text-slate-500 flex-shrink-0 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
                 </div>
                 
                 {isDropdownOpen && (
@@ -125,7 +125,7 @@ const LotSizeCalculator = () => {
                           placeholder="Search symbols..."
                           value={searchQuery}
                           onChange={(e) => setSearchQuery(e.target.value)}
-                          className="w-full bg-[#0c1221] border border-slate-700/60 rounded-lg px-3 py-2 text-sm text-slate-200 outline-none focus:border-indigo-500"
+                          className="w-full bg-[#0c1221] border border-slate-700/60 rounded-lg px-3 py-2 text-[15px] text-slate-200 outline-none focus:border-indigo-500"
                           onClick={(e) => e.stopPropagation()}
                         />
                       </div>
@@ -133,7 +133,7 @@ const LotSizeCalculator = () => {
                         {SYMBOLS.filter(sym => sym.toLowerCase().includes(searchQuery.toLowerCase())).map(sym => (
                           <div 
                             key={sym} 
-                            className={`px-3 py-2.5 rounded-lg cursor-pointer text-base font-medium ${symbol === sym ? 'bg-indigo-500/20 text-indigo-400' : 'text-slate-300 hover:bg-slate-800'}`}
+                            className={`px-3 py-2.5 rounded-lg cursor-pointer text-[15px] font-medium ${symbol === sym ? 'bg-indigo-500/20 text-indigo-400' : 'text-slate-300 hover:bg-slate-800'}`}
                             onClick={(e) => {
                               e.stopPropagation();
                               setSymbol(sym);
@@ -156,7 +156,7 @@ const LotSizeCalculator = () => {
 
             {/* Account Balance */}
             <div className="relative border border-slate-700/60 bg-[#12192b]/80 rounded-2xl px-4 py-3.5 focus-within:border-indigo-500 focus-within:ring-1 focus-within:ring-indigo-500 transition-all shadow-inner">
-              <label className="absolute -top-3 left-4 flex items-center gap-2 bg-[#0c1221] px-2 text-[11px] font-bold uppercase tracking-wider text-indigo-300 rounded-md">
+              <label className="absolute -top-3 left-4 flex items-center gap-2 bg-[#0c1221] px-2 text-[11px] sm:text-xs font-bold uppercase tracking-wider text-indigo-300 rounded-md">
                 Account Balance
                 <span className="group relative flex items-center">
                   <Info size={12} className="text-slate-400 group-hover:text-indigo-300 transition-colors" />
@@ -170,13 +170,13 @@ const LotSizeCalculator = () => {
                 placeholder="0.00"
                 value={balance}
                 onChange={(e) => setBalance(e.target.value)}
-                className="w-full bg-transparent border-none text-slate-100 font-semibold text-lg mt-1 outline-none placeholder:text-slate-600"
+                className="w-full bg-transparent border-none text-slate-100 font-semibold text-[15px] py-0.5 outline-none placeholder:text-slate-600"
               />
             </div>
 
             {/* Risk Percentage */}
             <div className="relative border border-slate-700/60 bg-[#12192b]/80 rounded-2xl px-4 py-3.5 focus-within:border-indigo-500 focus-within:ring-1 focus-within:ring-indigo-500 transition-all shadow-inner">
-              <label className="absolute -top-3 left-4 flex items-center gap-2 bg-[#0c1221] px-2 text-[11px] font-bold uppercase tracking-wider text-indigo-300 rounded-md">
+              <label className="absolute -top-3 left-4 flex items-center gap-2 bg-[#0c1221] px-2 text-[11px] sm:text-xs font-bold uppercase tracking-wider text-indigo-300 rounded-md">
                 Risk Percentage
                 <span className="group relative flex items-center">
                   <Info size={12} className="text-slate-400 group-hover:text-indigo-300 transition-colors" />
@@ -193,7 +193,7 @@ const LotSizeCalculator = () => {
                 onBlur={handlePercentageBlur}
                 min="0"
                 max="100"
-                className="w-full bg-transparent border-none text-slate-100 font-semibold text-lg mt-1 outline-none placeholder:text-slate-600"
+                className="w-full bg-transparent border-none text-slate-100 font-semibold text-[15px] py-0.5 outline-none placeholder:text-slate-600"
               />
             </div>
             
@@ -201,7 +201,7 @@ const LotSizeCalculator = () => {
 
             {/* Entry Price */}
             <div className="relative border border-slate-700/60 bg-[#12192b]/80 rounded-2xl px-4 py-3.5 focus-within:border-indigo-500 focus-within:ring-1 focus-within:ring-indigo-500 transition-all shadow-inner">
-              <label className="absolute -top-3 left-4 flex items-center gap-2 bg-[#0c1221] px-2 text-[11px] font-bold uppercase tracking-wider text-indigo-300 rounded-md">
+              <label className="absolute -top-3 left-4 flex items-center gap-2 bg-[#0c1221] px-2 text-[11px] sm:text-xs font-bold uppercase tracking-wider text-indigo-300 rounded-md">
                 Entry Price
                 <span className="group relative flex items-center">
                   <Info size={12} className="text-slate-400 group-hover:text-indigo-300 transition-colors" />
@@ -215,13 +215,13 @@ const LotSizeCalculator = () => {
                 placeholder="0.00000"
                 value={entryPrice}
                 onChange={(e) => setEntryPrice(e.target.value)}
-                className="w-full bg-transparent border-none text-slate-100 font-semibold text-lg mt-1 outline-none placeholder:text-slate-600"
+                className="w-full bg-transparent border-none text-slate-100 font-semibold text-[15px] py-0.5 outline-none placeholder:text-slate-600"
               />
             </div>
 
             {/* Exit Price */}
             <div className="relative border border-slate-700/60 bg-[#12192b]/80 rounded-2xl px-4 py-3.5 focus-within:border-indigo-500 focus-within:ring-1 focus-within:ring-indigo-500 transition-all shadow-inner">
-              <label className="absolute -top-3 left-4 flex items-center gap-2 bg-[#0c1221] px-2 text-[11px] font-bold uppercase tracking-wider text-indigo-300 rounded-md">
+              <label className="absolute -top-3 left-4 flex items-center gap-2 bg-[#0c1221] px-2 text-[11px] sm:text-xs font-bold uppercase tracking-wider text-indigo-300 rounded-md">
                 Exit Price
                 <span className="group relative flex items-center">
                   <Info size={12} className="text-slate-400 group-hover:text-indigo-300 transition-colors" />
@@ -235,7 +235,7 @@ const LotSizeCalculator = () => {
                 placeholder="0.00000"
                 value={exitPrice}
                 onChange={(e) => setExitPrice(e.target.value)}
-                className="w-full bg-transparent border-none text-slate-100 font-semibold text-lg mt-1 outline-none placeholder:text-slate-600"
+                className="w-full bg-transparent border-none text-slate-100 font-semibold text-[15px] py-0.5 outline-none placeholder:text-slate-600"
               />
             </div>
 
@@ -245,32 +245,25 @@ const LotSizeCalculator = () => {
 
         {/* Right Side: Results */}
         <div className="lg:w-[35%] flex flex-col">
-          <div className="bg-[#12192b]/80 border border-slate-700/60 rounded-3xl p-6 lg:px-8 lg:py-5 shadow-2xl relative overflow-hidden h-full flex flex-col justify-center">
+          <div className="bg-[#12192b]/80 border border-slate-700/60 rounded-3xl p-8 shadow-2xl relative overflow-hidden h-full flex flex-col pt-12">
             {/* Inner subtle glow */}
             <div className="absolute inset-0 bg-linear-to-br from-indigo-500/5 to-purple-500/5 pointer-events-none"></div>
 
-            <h3 className="text-base font-bold uppercase tracking-wider text-indigo-400 mb-4 flex items-center gap-3">
+            <h3 className="text-sm font-bold uppercase tracking-widest text-indigo-400 mb-8 flex items-center gap-3">
               Final Results
             </h3>
             
-            <div className="space-y-4 relative z-10 w-full">
-              <div className="flex flex-col items-end pb-4 border-b border-white/5 gap-2">
-                <span className="text-slate-400 font-medium w-full text-left">Lot Size</span>
+            <div className="space-y-8 relative z-10 w-full">
+              <div className="flex flex-col items-end pb-6 border-b border-white/5 gap-2">
+                <span className="text-slate-400 font-medium w-full text-left text-sm">Lot Size</span>
                 <span 
-                  className={`font-extrabold tracking-tight break-all text-right w-full ${!hasCalculated ? 'text-3xl text-slate-600' : 'text-4xl text-emerald-400'}`}
+                  className={`font-extrabold tracking-tight break-all text-right w-full ${!hasCalculated ? 'text-3xl text-slate-600' : 'text-3xl text-emerald-400'}`}
                 >
                   {!hasCalculated ? '-' : result?.lotSize}
                 </span>
               </div>
 
-              <div className="space-y-3">
-                <div className="flex flex-col items-end group gap-1">
-                  <span className="text-slate-500 text-sm group-hover:text-slate-400 transition-colors w-full text-left">Amount at Risk</span>
-                  <span className={`font-bold text-right w-full break-all ${!hasCalculated ? 'text-lg text-slate-600' : 'text-xl text-slate-200'}`}>
-                    {!hasCalculated ? '-' : `$${result?.riskAmount}`}
-                  </span>
-                </div>
-              </div>
+
             </div>
           </div>
         </div>
@@ -280,7 +273,8 @@ const LotSizeCalculator = () => {
         <div className="mt-12 flex justify-end relative z-10">
           <button 
             onClick={handleCalculate}
-            className="w-full md:w-auto bg-linear-to-r from-indigo-500 to-purple-600 hover:from-indigo-400 hover:to-purple-500 text-white px-10 py-4 rounded-xl font-bold transition-all shadow-lg hover:shadow-indigo-500/25 active:scale-[0.98] focus:ring-4 focus:ring-indigo-500/20 text-lg flex items-center justify-center gap-2 group"
+            disabled={!symbol || !balance || !risk || !entryPrice || !exitPrice}
+            className="w-full md:w-auto bg-linear-to-r from-indigo-500 to-purple-600 hover:from-indigo-400 hover:to-purple-500 disabled:opacity-50 disabled:cursor-not-allowed text-white px-10 py-4 rounded-xl font-bold transition-all shadow-lg hover:shadow-indigo-500/25 active:scale-[0.98] focus:ring-4 focus:ring-indigo-500/20 text-lg flex items-center justify-center gap-2 group"
           >
             Calculate
             <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
