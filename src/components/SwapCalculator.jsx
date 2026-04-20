@@ -20,13 +20,13 @@ const SwapCalculator = () => {
   // Dates
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
-  
+
   // UI States
   const [isPlatformOpen, setIsPlatformOpen] = useState(false);
   const [isSymbolOpen, setIsSymbolOpen] = useState(false);
   const [isDirectionOpen, setIsDirectionOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
-  
+
   const [isDatePickerOpen, setIsDatePickerOpen] = useState(false);
   const [pickerMonth, setPickerMonth] = useState(new Date());
   const [selectionPhase, setSelectionPhase] = useState('start');
@@ -50,10 +50,10 @@ const SwapCalculator = () => {
   // Format date helper for UI
   const formatDateUI = () => {
     if (!startDate && !endDate) return 'From → To';
-    
+
     const startStr = startDate ? `${startDate.getDate().toString().padStart(2, '0')}-${(startDate.getMonth() + 1).toString().padStart(2, '0')}-${startDate.getFullYear()}` : 'From';
     const endStr = endDate ? `${endDate.getDate().toString().padStart(2, '0')}-${(endDate.getMonth() + 1).toString().padStart(2, '0')}-${endDate.getFullYear()}` : 'To';
-    
+
     return `${startStr} → ${endStr}`;
   };
 
@@ -72,11 +72,13 @@ const SwapCalculator = () => {
           method: 'GET',
           headers: {
             "accept": "application/json",
-            "accept-language": "en-GB,en;q=0.9"
+            "accept-language": "en-GB,en;q=0.9",
+            "origin": "https://fundednext.com",
+            "referer": "https://fundednext.com/",
           }
         });
         const data = await res.json();
-        
+
         let points = 0;
         if (data && data.data !== undefined) {
           points = data.data;
@@ -85,7 +87,7 @@ const SwapCalculator = () => {
         } else if (data && data.points !== undefined) {
           points = data.points;
         }
-        
+
         setSwapPoints(parseFloat(points) || 0);
       } catch (err) {
         console.error('Error fetching swap points:', err);
@@ -99,7 +101,7 @@ const SwapCalculator = () => {
 
   const handleCalculate = async () => {
     if (!platform || !symbol || !direction || !volume || !startDate || !endDate) return;
-    
+
     setIsCalculating(true);
     try {
       const payload = {
@@ -121,7 +123,7 @@ const SwapCalculator = () => {
         body: JSON.stringify(payload)
       });
       const data = await resp.json();
-      
+
       let fee = 0;
       if (data && data.data !== undefined) {
         fee = data.data;
@@ -130,7 +132,7 @@ const SwapCalculator = () => {
       } else if (data && data.result !== undefined) {
         fee = data.result;
       }
-      
+
       setResultSwapFee(parseFloat(fee) || 0);
       setHasCalculated(true);
     } catch (err) {
@@ -147,10 +149,10 @@ const SwapCalculator = () => {
     const month = monthDate.getMonth();
     const firstDay = new Date(year, month, 1).getDay();
     const daysInMonth = new Date(year, month + 1, 0).getDate();
-    
+
     const days = [];
-    for(let i=0; i<firstDay; i++) days.push(null);
-    for(let i=1; i<=daysInMonth; i++) days.push(new Date(year, month, i));
+    for (let i = 0; i < firstDay; i++) days.push(null);
+    for (let i = 1; i <= daysInMonth; i++) days.push(new Date(year, month, i));
     return days;
   };
 
@@ -158,7 +160,7 @@ const SwapCalculator = () => {
 
   const handleDayClick = (day) => {
     if (!day) return;
-    
+
     if (selectionPhase === 'start') {
       setStartDate(day);
       setEndDate(null);
@@ -196,17 +198,17 @@ const SwapCalculator = () => {
       </div>
 
       <div className="flex flex-col lg:flex-row gap-12 lg:gap-20 relative z-20">
-        
+
         {/* Left Side: Form */}
         <div className="flex-1 flex flex-col">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            
+
             {/* Platform Dropdown */}
             <div className="relative border border-slate-700/60 bg-[#12192b]/80 rounded-2xl px-4 py-3.5 focus-within:border-indigo-500 focus-within:ring-1 focus-within:ring-indigo-500 transition-all shadow-inner">
               <label className="absolute -top-3 left-4 bg-[#0c1221] px-2 text-[11px] sm:text-xs font-bold uppercase tracking-wider text-indigo-300 rounded-md">
                 Platform
               </label>
-              <div 
+              <div
                 className="w-full relative py-0.5"
                 onClick={() => setIsPlatformOpen(true)}
               >
@@ -216,14 +218,14 @@ const SwapCalculator = () => {
                   </span>
                   <svg className="w-4 h-4 text-slate-500 flex-shrink-0 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
                 </div>
-                
+
                 {isPlatformOpen && (
                   <>
                     <div className="fixed inset-0 z-40" onClick={(e) => { e.stopPropagation(); setIsPlatformOpen(false); }}></div>
                     <div className="absolute top-full left-0 right-0 mt-2 bg-[#12192b] border border-slate-700/60 rounded-xl shadow-[0_10px_40px_rgba(0,0,0,0.8)] z-50 p-2 overflow-y-auto max-h-48">
                       {PLATFORMS.map(plat => (
-                        <div 
-                          key={plat.value} 
+                        <div
+                          key={plat.value}
                           className={`px-3 py-2.5 rounded-lg cursor-pointer text-[15px] font-medium ${platform?.value === plat.value ? 'bg-indigo-500/20 text-indigo-400' : 'text-slate-300 hover:bg-slate-800'}`}
                           onClick={(e) => {
                             e.stopPropagation();
@@ -245,7 +247,7 @@ const SwapCalculator = () => {
               <label className="absolute -top-3 left-4 bg-[#0c1221] px-2 text-[11px] sm:text-xs font-bold uppercase tracking-wider text-indigo-300 rounded-md">
                 Instrument
               </label>
-              <div 
+              <div
                 className="w-full relative py-0.5"
                 onClick={() => setIsSymbolOpen(true)}
               >
@@ -255,13 +257,13 @@ const SwapCalculator = () => {
                   </span>
                   <svg className="w-4 h-4 text-slate-500 flex-shrink-0 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
                 </div>
-                
+
                 {isSymbolOpen && (
                   <>
                     <div className="fixed inset-0 z-40" onClick={(e) => { e.stopPropagation(); setIsSymbolOpen(false); }}></div>
                     <div className="absolute top-full left-0 right-0 mt-2 bg-[#12192b] border border-slate-700/60 rounded-xl shadow-[0_10px_40px_rgba(0,0,0,0.8)] z-50 p-2">
                       <div className="relative mb-2">
-                        <input 
+                        <input
                           type="text"
                           autoFocus
                           placeholder="Search instrument..."
@@ -273,8 +275,8 @@ const SwapCalculator = () => {
                       </div>
                       <div className="max-h-80 overflow-y-auto custom-scrollbar">
                         {SYMBOLS.filter(sym => sym.toLowerCase().includes(searchQuery.toLowerCase())).map(sym => (
-                          <div 
-                            key={sym} 
+                          <div
+                            key={sym}
                             className={`px-3 py-2.5 rounded-lg cursor-pointer text-[15px] font-medium ${symbol === sym ? 'bg-indigo-500/20 text-indigo-400' : 'text-slate-300 hover:bg-slate-800'}`}
                             onClick={(e) => {
                               e.stopPropagation();
@@ -298,7 +300,7 @@ const SwapCalculator = () => {
               <label className="absolute -top-3 left-4 bg-[#0c1221] px-2 text-[11px] sm:text-xs font-bold uppercase tracking-wider text-indigo-300 rounded-md">
                 Trade Type
               </label>
-              <div 
+              <div
                 className="w-full relative py-0.5"
                 onClick={() => setIsDirectionOpen(true)}
               >
@@ -308,14 +310,14 @@ const SwapCalculator = () => {
                   </span>
                   <svg className="w-4 h-4 text-slate-500 flex-shrink-0 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
                 </div>
-                
+
                 {isDirectionOpen && (
                   <>
                     <div className="fixed inset-0 z-40" onClick={(e) => { e.stopPropagation(); setIsDirectionOpen(false); }}></div>
                     <div className="absolute top-full left-0 right-0 mt-2 bg-[#12192b] border border-slate-700/60 rounded-xl shadow-[0_10px_40px_rgba(0,0,0,0.8)] z-50 p-2 overflow-y-auto max-h-48">
                       {['Buy', 'Sell'].map(dir => (
-                        <div 
-                          key={dir} 
+                        <div
+                          key={dir}
                           className={`px-3 py-2.5 rounded-lg cursor-pointer text-[15px] font-medium ${direction === dir ? 'bg-indigo-500/20 text-indigo-400' : 'text-slate-300 hover:bg-slate-800'}`}
                           onClick={(e) => {
                             e.stopPropagation();
@@ -351,8 +353,8 @@ const SwapCalculator = () => {
             {/* Lot Size */}
             <div className="relative border border-slate-700/60 bg-[#12192b]/80 rounded-2xl px-4 py-3.5 flex items-center justify-between focus-within:border-indigo-500 focus-within:ring-1 focus-within:ring-indigo-500 transition-all shadow-inner">
               <label className="absolute -top-3 left-4 bg-[#0c1221] px-2 text-[11px] sm:text-xs font-bold uppercase tracking-wider text-indigo-300 rounded-md">Lot Size</label>
-              <input 
-                type="number" 
+              <input
+                type="number"
                 value={volume}
                 step="0.01"
                 placeholder="Enter Size"
@@ -362,14 +364,14 @@ const SwapCalculator = () => {
             </div>
 
             {/* Trade Period (Calendar Popup) */}
-            <div 
+            <div
               ref={datePickerRef}
               className={`relative border border-slate-700/60 bg-[#12192b]/80 rounded-2xl px-4 py-3.5 focus-within:border-indigo-500 focus-within:ring-1 focus-within:ring-indigo-500 transition-all shadow-inner ${isDatePickerOpen ? 'z-[60]' : ''}`}
             >
               <label className="absolute -top-3 left-4 bg-[#0c1221] px-2 text-[11px] sm:text-xs font-bold uppercase tracking-wider text-indigo-300 rounded-md">
                 Trade Period
               </label>
-              <div 
+              <div
                 className="w-full relative py-0.5 cursor-pointer flex items-center min-h-[24px]"
                 onClick={() => setIsDatePickerOpen(true)}
               >
@@ -377,16 +379,16 @@ const SwapCalculator = () => {
                   {formatDateUI()}
                 </span>
               </div>
-                
+
               {isDatePickerOpen && (
                 <>
                   <div className="fixed inset-0 z-40" onClick={(e) => { e.stopPropagation(); setIsDatePickerOpen(false); }}></div>
-                  <div 
+                  <div
                     className={`absolute left-0 ${pickerPosition === 'top' ? 'bottom-[calc(100%+8px)]' : 'top-full mt-2'} bg-[#12192b] border border-slate-700/60 rounded-xl shadow-[0_10px_40px_rgba(0,0,0,0.9)] z-50 p-4 w-[260px] sm:w-[280px] origin-top`}
                     onClick={(e) => e.stopPropagation()}
                   >
                     <div className="flex justify-between items-center mb-4 px-2">
-                      <button 
+                      <button
                         onClick={() => setPickerMonth(new Date(pickerMonth.getFullYear(), pickerMonth.getMonth() - 1, 1))}
                         className="text-slate-400 hover:text-white p-1 rounded-md hover:bg-white/10 transition-colors"
                       >
@@ -395,25 +397,25 @@ const SwapCalculator = () => {
                       <span className="text-slate-100 font-semibold text-[15px]">
                         {pickerMonth.toLocaleString('default', { month: 'long', year: 'numeric' })}
                       </span>
-                      <button 
+                      <button
                         onClick={() => setPickerMonth(new Date(pickerMonth.getFullYear(), pickerMonth.getMonth() + 1, 1))}
                         className="text-slate-400 hover:text-white p-1 rounded-md hover:bg-white/10 transition-colors"
                       >
                         &gt;
                       </button>
                     </div>
-                    
+
                     <div className="grid grid-cols-7 gap-1 text-center text-[11px] font-medium text-slate-500 mb-2">
                       {'Su Mo Tu We Th Fr Sa'.split(' ').map(d => <div key={d}>{d}</div>)}
                     </div>
-                    
+
                     <div className="grid grid-cols-7 gap-1 text-center text-xs">
                       {calendarDays.map((d, i) => {
                         const selected = isSelected(d);
                         const inRange = isBetween(d);
-                        
+
                         return (
-                          <div 
+                          <div
                             key={i}
                             onClick={() => handleDayClick(d)}
                             className={`
@@ -447,13 +449,12 @@ const SwapCalculator = () => {
             <div className="space-y-8 relative z-10 w-full">
               <div className="flex flex-col items-end pb-6 border-b border-white/5 gap-2">
                 <span className="text-slate-400 font-medium w-full text-left text-sm">Swap Fee</span>
-                <span 
-                  className={`font-extrabold tracking-tight break-all text-right w-full ${
-                   !hasCalculated ? 'text-3xl text-slate-600' : 
-                   resultSwapFee < 0 ? 'text-3xl text-rose-400' : 'text-3xl text-emerald-400'
-                 }`}
+                <span
+                  className={`font-extrabold tracking-tight break-all text-right w-full ${!hasCalculated ? 'text-3xl text-slate-600' :
+                      resultSwapFee < 0 ? 'text-3xl text-rose-400' : 'text-3xl text-emerald-400'
+                    }`}
                 >
-                 {!hasCalculated ? '-' : `${resultSwapFee < 0 ? '-' : ''}$${Math.abs(resultSwapFee).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
+                  {!hasCalculated ? '-' : `${resultSwapFee < 0 ? '-' : ''}$${Math.abs(resultSwapFee).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
                 </span>
               </div>
             </div>
@@ -463,7 +464,7 @@ const SwapCalculator = () => {
       </div>
 
       <div className="mt-12 flex justify-end relative z-10">
-        <button 
+        <button
           onClick={handleCalculate}
           disabled={isCalculating || !platform || !symbol || !direction || !volume || !startDate || !endDate}
           className="w-full md:w-auto bg-linear-to-r from-indigo-500 to-purple-600 hover:from-indigo-400 hover:to-purple-500 disabled:opacity-50 disabled:cursor-not-allowed text-white px-10 py-4 rounded-xl font-bold transition-all shadow-lg hover:shadow-indigo-500/25 active:scale-[0.98] focus:ring-4 focus:ring-indigo-500/20 text-lg flex items-center justify-center gap-2 group"
