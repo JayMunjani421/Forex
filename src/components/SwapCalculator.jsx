@@ -72,9 +72,7 @@ const SwapCalculator = () => {
           method: 'GET',
           headers: {
             "accept": "application/json",
-            "accept-language": "en-GB,en;q=0.9",
-            "origin": "https://fundednext.com",
-            "referer": "https://fundednext.com/",
+            "accept-language": "en-GB,en;q=0.9"
           }
         });
         const data = await res.json();
