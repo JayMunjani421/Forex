@@ -6,7 +6,7 @@
 
 @layer base {
   body {
-    @apply bg-[#F6F8FA] text-gray-900 antialiased min-h-screen;
+    @apply bg-[#070b14] text-slate-100 antialiased min-h-screen;
     font-family: var(--font-sans);
   }
 }

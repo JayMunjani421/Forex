@@ -13,7 +13,7 @@ export default defineConfig({
       '/api': {
         target: 'https://api.fundednext.com',
         changeOrigin: true,
-      }
+      },
     }
   }
 })

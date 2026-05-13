@@ -2,7 +2,7 @@ import { TrendingUp, Globe, Briefcase } from 'lucide-react';
 
 const ForexInfo = () => {
   return (
-    <div className="w-full max-w-5xl mx-auto mt-12">
+    <div className="w-full max-w-5xl mx-auto mt-0">
       <div className="bg-linear-to-br from-[#12192b]/90 to-[#0c1221]/90 backdrop-blur-3xl border border-indigo-500/20 rounded-3xl p-8 md:p-12 shadow-[0_20px_50px_rgba(0,0,0,0.5)] relative overflow-hidden">
         
         {/* Subtle background graphics */}
@@ -10,7 +10,10 @@ const ForexInfo = () => {
         <div className="absolute bottom-0 left-0 w-64 h-64 bg-purple-500/10 rounded-full blur-[80px] pointer-events-none"></div>
 
         <div className="relative z-10">
-          <div className="flex flex-col items-center text-center mb-10">
+          <div
+            id="kb-intro"
+            className="scroll-mt-28 flex flex-col items-center text-center mb-10 lg:scroll-mt-32"
+          >
             <span className="text-indigo-400 font-bold tracking-wider uppercase text-sm mb-3">Knowledge Base</span>
             <h2 className="text-3xl md:text-4xl font-extrabold text-white mb-4">How Does Forex Actually Work?</h2>
             <p className="text-slate-400 max-w-2xl text-lg">
@@ -20,7 +23,10 @@ const ForexInfo = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {/* Card 1 */}
-            <div className="bg-[#1a233a] border border-white/5 p-6 rounded-2xl hover:bg-[#1e2a45] transition-colors group">
+            <div
+              id="kb-currency-pairs"
+              className="scroll-mt-28 lg:scroll-mt-32 bg-[#1a233a] border border-white/5 p-6 rounded-2xl hover:bg-[#1e2a45] transition-colors group"
+            >
               <div className="w-12 h-12 rounded-xl bg-indigo-500/20 flex items-center justify-center text-indigo-400 mb-6 group-hover:scale-110 transition-transform">
                 <Globe className="w-6 h-6" />
               </div>
@@ -31,7 +37,10 @@ const ForexInfo = () => {
             </div>
 
             {/* Card 2 */}
-            <div className="bg-[#1a233a] border border-white/5 p-6 rounded-2xl hover:bg-[#1e2a45] transition-colors group">
+            <div
+              id="kb-pips-spread"
+              className="scroll-mt-28 lg:scroll-mt-32 bg-[#1a233a] border border-white/5 p-6 rounded-2xl hover:bg-[#1e2a45] transition-colors group"
+            >
               <div className="w-12 h-12 rounded-xl bg-emerald-500/20 flex items-center justify-center text-emerald-400 mb-6 group-hover:scale-110 transition-transform">
                 <TrendingUp className="w-6 h-6" />
               </div>
@@ -42,7 +51,10 @@ const ForexInfo = () => {
             </div>
 
             {/* Card 3 */}
-            <div className="bg-[#1a233a] border border-white/5 p-6 rounded-2xl hover:bg-[#1e2a45] transition-colors group">
+            <div
+              id="kb-lots-leverage"
+              className="scroll-mt-28 lg:scroll-mt-32 bg-[#1a233a] border border-white/5 p-6 rounded-2xl hover:bg-[#1e2a45] transition-colors group"
+            >
               <div className="w-12 h-12 rounded-xl bg-rose-500/20 flex items-center justify-center text-rose-400 mb-6 group-hover:scale-110 transition-transform">
                 <Briefcase className="w-6 h-6" />
               </div>
