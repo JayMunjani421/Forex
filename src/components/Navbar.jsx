@@ -6,12 +6,12 @@ const navItems = [
   { to: '/', label: 'Home', end: true },
   { to: '/about', label: 'About' },
   { to: '/calculators', label: 'Calculators' },
-  { to: '/charts', label: 'Charts' },
-  { to: '/market-hours', label: 'Sessions' },
   { to: '/market-today', label: 'Market Today' },
-  { to: '/learn', label: 'Learn' },
-  { to: '/blog', label: 'Blog' },
+  { to: '/blog', label: 'Blogs' },
+  { to: '/market-hours', label: 'Sessions' },
+  { to: '/charts', label: 'Charts' },
   { to: '/glossary', label: 'Glossary' },
+  { to: '/learn', label: 'Learn' },
 ];
 
 const linkClass = ({ isActive }) =>

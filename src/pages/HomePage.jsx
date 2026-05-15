@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { Calculator, BookOpen, Newspaper, LineChart, ArrowRight, BookMarked, Globe2, FileText } from 'lucide-react';
+import { Calculator, BookOpen, Newspaper, LineChart, ArrowRight, BookMarked, Globe2, FileText, TrendingUp } from 'lucide-react';
 import PageHeading from '../components/PageHeading';
 import { useDocumentTitle } from '../hooks/useDocumentTitle';
 
@@ -44,8 +44,8 @@ export default function HomePage() {
     },
     {
       to: '/blog',
-      title: 'Week in FX',
-      desc: 'Short weekly notes on risk, rollover, and how to use the tools.',
+      title: 'Trading blog',
+      desc: 'Daily forex recaps from live feeds — summaries, images, and source links.',
       icon: FileText,
       accent: 'from-violet-500/20 to-fuchsia-500/10',
     },
@@ -56,6 +56,13 @@ export default function HomePage() {
       icon: BookMarked,
       accent: 'from-cyan-500/20 to-blue-500/10',
     },
+    {
+      to: '/market-today',
+      title: 'Market Today',
+      desc: 'Perpetual futures by category, global indices, and supported Indian brokers.',
+      icon: TrendingUp,
+      accent: 'from-rose-500/20 to-orange-500/10',
+    },
   ];
 
   return (
@@ -64,7 +71,7 @@ export default function HomePage() {
         <div className="mx-auto max-w-3xl space-y-6 text-center">
           <PageHeading>Plan trades with clarity</PageHeading>
           <p className="text-lg font-light leading-relaxed text-indigo-100/75">
-            Free calculators, learn content, charts, news, glossary, sessions, and Week in FX notes — built for quick
+            Free calculators, learn content, charts, market today, news, daily blog, glossary, and sessions — built for quick
             checks and context, not noise.
           </p>
           <div className="flex flex-wrap items-center justify-center gap-3 pt-2">

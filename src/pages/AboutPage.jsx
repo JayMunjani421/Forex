@@ -8,6 +8,7 @@ import {
   BookMarked,
   Globe2,
   FileText,
+  TrendingUp,
 } from 'lucide-react';
 import PageHeading from '../components/PageHeading';
 import { useDocumentTitle } from '../hooks/useDocumentTitle';
@@ -63,11 +64,18 @@ const features = [
       'Approximate Sydney, Tokyo, London, and New York windows in UTC plus a live “open now” hint for planning when liquidity is usually deeper.',
   },
   {
+    to: '/market-today',
+    title: 'Market Today',
+    icon: TrendingUp,
+    body:
+      'Live perpetual futures by category with sortable tables, global index snapshots (US, Europe, Asia), and supported Indian brokers — updated from market data APIs.',
+  },
+  {
     to: '/blog',
-    title: 'Week in FX',
+    title: 'Trading blog',
     icon: FileText,
     body:
-      'Short weekly-style notes on risk, rollover, and session behavior — easy to replace with your own posts or a CMS when you scale the site.',
+      'Daily forex recaps from live RSS feeds — rewritten summaries with images, SEO-friendly pages, and links to the original publisher.',
   },
 ];
 
@@ -80,9 +88,9 @@ export default function AboutPage() {
         <div className="text-center">
           <PageHeading>About Forex Tools</PageHeading>
           <p className="mt-4 text-lg leading-relaxed text-slate-400">
-            Forex Tools brings together calculators, learn content, charts, news, a glossary, session map, and Week in
-            FX notes in one place. The goal is simple: help you sanity-check sizes, costs, and context without replacing
-            your broker or your own research.
+            Forex Tools brings together calculators, learn content, charts, market today, news, a glossary, session map,
+            and a daily blog in one place. The goal is simple: help you sanity-check sizes, costs, and context without
+            replacing your broker or your own research.
           </p>
         </div>
 
@@ -145,20 +153,6 @@ export default function AboutPage() {
           </p>
         </section>
 
-        <div className="flex flex-wrap justify-center gap-3 pb-4">
-          <Link
-            to="/calculators"
-            className="rounded-full bg-indigo-500 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-indigo-500/20 transition hover:bg-indigo-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-300"
-          >
-            Go to calculators
-          </Link>
-          <Link
-            to="/"
-            className="rounded-full border border-white/15 bg-white/5 px-6 py-3 text-sm font-semibold text-slate-200 transition hover:bg-white/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400"
-          >
-            Home
-          </Link>
-        </div>
       </div>
     </main>
   );

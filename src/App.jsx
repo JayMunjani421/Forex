@@ -7,7 +7,8 @@ import ChartsPage from './pages/ChartsPage';
 import AboutPage from './pages/AboutPage';
 import GlossaryPage from './pages/GlossaryPage';
 import MarketHoursPage from './pages/MarketHoursPage';
-import BlogPage from './pages/BlogPage';
+import BlogListPage from './pages/BlogListPage';
+import BlogDetailPage from './pages/BlogDetailPage';
 import MarketTodayPage from './pages/MarketTodayPage';
 import NotFoundPage from './pages/NotFoundPage';
 
@@ -23,7 +24,8 @@ export default function App() {
         <Route path="about" element={<AboutPage />} />
         <Route path="glossary" element={<GlossaryPage />} />
         <Route path="market-hours" element={<MarketHoursPage />} />
-        <Route path="blog" element={<BlogPage />} />
+        <Route path="blog" element={<BlogListPage />} />
+        <Route path="blog/:slug" element={<BlogDetailPage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Route>
     </Routes>
