@@ -14,6 +14,11 @@ export default defineConfig({
         target: 'https://api.fundednext.com',
         changeOrigin: true,
       },
+      '/nifty-api': {
+        target: 'https://webapi.niftytrader.in',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/nifty-api/, '/webapi'),
+      },
     }
   }
 })

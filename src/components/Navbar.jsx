@@ -9,6 +9,7 @@ const navItems = [
   { to: '/charts', label: 'Charts' },
   { to: '/market-hours', label: 'Sessions' },
   { to: '/news', label: 'News' },
+  { to: '/market-today', label: 'Market Today' },
   { to: '/learn', label: 'Learn' },
   { to: '/blog', label: 'Blog' },
   { to: '/glossary', label: 'Glossary' },

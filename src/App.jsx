@@ -9,6 +9,7 @@ import AboutPage from './pages/AboutPage';
 import GlossaryPage from './pages/GlossaryPage';
 import MarketHoursPage from './pages/MarketHoursPage';
 import BlogPage from './pages/BlogPage';
+import MarketTodayPage from './pages/MarketTodayPage';
 import NotFoundPage from './pages/NotFoundPage';
 
 export default function App() {
@@ -20,6 +21,7 @@ export default function App() {
         <Route path="learn" element={<LearnPage />} />
         <Route path="charts" element={<ChartsPage />} />
         <Route path="news" element={<NewsPage />} />
+        <Route path="market-today" element={<MarketTodayPage />} />
         <Route path="about" element={<AboutPage />} />
         <Route path="glossary" element={<GlossaryPage />} />
         <Route path="market-hours" element={<MarketHoursPage />} />
