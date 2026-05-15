@@ -10,14 +10,14 @@ export default defineConfig({
   ],
   server: {
     proxy: {
+      '/api/nifty': {
+        target: 'https://webapi.niftytrader.in',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api\/nifty/, '/webapi'),
+      },
       '/api': {
         target: 'https://api.fundednext.com',
         changeOrigin: true,
-      },
-      '/nifty-api': {
-        target: 'https://webapi.niftytrader.in',
-        changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/nifty-api/, '/webapi'),
       },
     }
   }

@@ -1,4 +1,5 @@
-const API_BASE = import.meta.env.DEV ? '/nifty-api' : 'https://webapi.niftytrader.in/webapi';
+/** Same-origin proxy: Vite dev (vite.config) + Vercel (vercel.json) → avoids browser CORS */
+const API_BASE = '/api/nifty';
 
 async function fetchJson(url) {
   const res = await fetch(url);
