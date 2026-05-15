@@ -101,7 +101,7 @@ export default function BlogDetailPage() {
             <img
               src={imageSrc}
               alt=""
-              className="w-full rounded-2xl border border-white/10 object-cover max-h-[420px]"
+              className="w-full rounded-2xl border border-white/10 object-cover max-h-105"
               loading="eager"
             />
           )}
