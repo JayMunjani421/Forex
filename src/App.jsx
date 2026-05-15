@@ -4,7 +4,6 @@ import HomePage from './pages/HomePage';
 import CalculatorsPage from './pages/CalculatorsPage';
 import LearnPage from './pages/LearnPage';
 import ChartsPage from './pages/ChartsPage';
-import NewsPage from './pages/NewsPage';
 import AboutPage from './pages/AboutPage';
 import GlossaryPage from './pages/GlossaryPage';
 import MarketHoursPage from './pages/MarketHoursPage';
@@ -20,7 +19,6 @@ export default function App() {
         <Route path="calculators" element={<CalculatorsPage />} />
         <Route path="learn" element={<LearnPage />} />
         <Route path="charts" element={<ChartsPage />} />
-        <Route path="news" element={<NewsPage />} />
         <Route path="market-today" element={<MarketTodayPage />} />
         <Route path="about" element={<AboutPage />} />
         <Route path="glossary" element={<GlossaryPage />} />
